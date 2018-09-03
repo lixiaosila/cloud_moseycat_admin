@@ -4,8 +4,7 @@ import {connect} from 'react-redux'
 import {Button, Input, Icon, Form, Checkbox,Spin } from 'antd'
 import {login, getUserInfo} from '@/redux/actions'
 import PropTypes from 'prop-types'
-import Particles from 'react-particles-js'
-import {particles} from './params'
+
 const FormItem = Form.Item
 
 class Login extends Component {
@@ -15,11 +14,10 @@ class Login extends Component {
   }
 
   state = {
-    loading: false
+    
   }
 
   componentDidMount(){
-
     const historyUser = localStorage.getItem('user')
     if(historyUser){
       const {user,password} = JSON.parse(historyUser)
@@ -32,8 +30,11 @@ class Login extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const {user,password,remember} = values
-        remember?localStorage.setItem('user',JSON.stringify({user,password})):localStorage.removeItem('user')
-        this.login({user,password})
+        remember ? localStorage.setItem('user',JSON.stringify({user,password})) : localStorage.removeItem('user')
+        this.login({
+          username: user,
+          password
+        })
       }
     })
   }
@@ -42,24 +43,27 @@ class Login extends Component {
     this.props.form.setFieldsValue({user,password:'123456'})
   }
 
-  login = formVal=> {
-    const {handleLogin} = this.props
+  login = formVal => {
+    const { handleLogin } = this.props
     // 登录完成后 发送请求 调用接口获取用户信息
-    this.setState({loading:true})
-    handleLogin(formVal).then(status => {
-      this.setState({loading:false})
-      status && this.getUserInfo()
+    handleLogin(formVal).then(res => {
+      res && this.goDashBoard()
     })
   }
 
-  getUserInfo = ()=> {
-    this.setState({loading:true})
-    const { getUserInfo} = this.props,{history} = this.context.router
-    // 发送请求 调用接口获取用户信息
-    getUserInfo().then(status =>{
-      this.setState({loading:false})
-      status && history.replace('/dashboard')
-    })
+  // getUserInfo = ()=> {
+  //   // const { getUserInfo} = this.props;
+  //   let {history} = this.context.router;
+          
+  //   // // 发送请求 调用接口获取用户信息
+  //   // getUserInfo().then(status =>{
+  //   //   status && history.replace('/dashboard')
+  //   // })
+  //   history.replace('/dashboard')
+  // }
+  goDashBoard() {
+    let {history} = this.context.router;
+    history.replace('/dashboard')
   }
 
   render() {
@@ -67,21 +71,11 @@ class Login extends Component {
     return (
 
         <div className='login-container'>
-          <Particles
-              params={{
-                particles
-              }}
-              style={{width:'100%',height:'100%'}}
-          />
           <Form
               className='content'
               onSubmit={this.handleSubmit}
           >
-            <Spin
-                spinning={this.state.loading}
-                tip='加载中...'
-            >
-              <FormItem>
+            <FormItem>
               {getFieldDecorator('user', {
                 rules: [{ required: true, message: '请输入账号!' }],
               })(
@@ -125,26 +119,7 @@ class Login extends Component {
                   登录
                 </Button>
             </FormItem>
-            <FormItem>
-              <div className='row-container'>
-                  <Button
-                      className='user-type-button'
-                      onClick={this.setFromData.bind(this,'admin')}
-                  >
-                    管理员
-                  </Button>
-                  <Button
-                      className='user-type-button'
-                      onClick={this.setFromData.bind(this,'normal')}
-                  >
-                    普通用户
-                  </Button>
-              </div>
-            </FormItem>
-
-          </Spin>
-
-         </Form>
+          </Form>
         </div>
     )
   }

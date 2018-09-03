@@ -10,9 +10,9 @@ class App extends Component {
   componentWillMount(){
     window.onhashchange= ()=>{
       if(window.location.hash!=='/login'){
-        if(localStorage.getItem('token')===null){
-          window.location.href = '#/login'
-        }
+        // if(localStorage.getItem('token')===null){
+        //   window.location.href = '#/login'
+        // }
       }
     }
   }

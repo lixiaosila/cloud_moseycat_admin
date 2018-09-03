@@ -15,10 +15,10 @@ const LayoutHeader = props => {
 
   const historyUserInfo = JSON.parse(localStorage.getItem('userInfo'))
 
-  let userInfo = props.userInfo ?props.userInfo:historyUserInfo
+  let userInfo = props.userInfo ? props.userInfo : historyUserInfo
 
   if(!userInfo.roles){
-    getUserInfo()
+    // getUserInfo()
   }
 
   const handleLogout =() => deleteToken()

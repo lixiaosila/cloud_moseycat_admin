@@ -7,17 +7,18 @@ const login = params => dispatch => {
    * 第二次请求再把token传给后台，获取用户信息
    **/
   return new Promise(reslove => {
-    api.post('/login', params).then(res => {
+    api.post('/admin/login', params).then(res => {
       // 账号密码正确，不发送第二次请求
-      if (res.data.success) {
+      if (res.data.code == 1) {
         //设置全局token并缓存token
         dispatch({
           type: SET_TOKEN,
-          playload: res.data.datas.token
+          playload: 'token'
         })
-        localStorage.setItem('token', res.data.datas.token)
+        //Token 设置
+        // localStorage.setItem('token', res.data.datas.token)
       }
-      reslove(res.data.success)
+      reslove(res.data)
     })
   })
 }
