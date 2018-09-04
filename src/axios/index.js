@@ -1,6 +1,6 @@
 import axios from 'axios'
 import store from '@/redux/store'
-var qs = require('qs');
+import qs from 'qs'
 
 import {message} from 'antd'
 const api = axios.create({

@@ -17,10 +17,8 @@ class SiderComponent extends Component {
           width={isMobile ? 0 :250}
       >
         <div className="logo">
-          <Icon
-              type="github"
-          /> {
-            collapsed || <span> Github </span>
+          {
+            collapsed || <span> 溜达猫管理后台 </span>
           }
         </div>
         <Menu

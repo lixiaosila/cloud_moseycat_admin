@@ -26,7 +26,7 @@ const Main = ({ location }) => {
           key={location.pathname}
           timeout={500}
       >
-        <Content style={{ margin: '24px 16px'}}>
+        <Content style={{ margin: '12px 10px'}}>
           <Switch>
             {
               routes.map(ele => {

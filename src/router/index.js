@@ -26,7 +26,8 @@ export const routes = [
   { path: '/chart/keyboard', component: Keyboard },
   { path: '/chart/mixchart', component: Mixchart },
 
-  { path: '/permission/toggle', component: PermissionToggle },
+  { path: '/permission/manage', component: PermissionToggle },
+  
   { path: '/permission/intercept', component: PermissionIntercept, permission:'admin' },
 
   { path: '/table/basic', component: TableBasic },

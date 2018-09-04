@@ -63,7 +63,7 @@ class Login extends Component {
   // }
   goDashBoard() {
     let {history} = this.context.router;
-    history.replace('/dashboard')
+    history.replace('/table/edit')
   }
 
   render() {
