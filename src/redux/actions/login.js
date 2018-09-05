@@ -1,6 +1,6 @@
 import api from '@/axios'
 import { message } from 'antd'
-import { SET_TOKEN,SET_USERINFO,DELETE_TOKEN } from './type.js'
+import { SET_USERINFO,DELETE_TOKEN } from './type.js'
 const login = params => dispatch => {
   /**
    * 登录需要发送两次请求，第一次获取token
@@ -10,13 +10,10 @@ const login = params => dispatch => {
     api.post('/admin/login', params).then(res => {
       // 账号密码正确，不发送第二次请求
       if (res.data.code == 1) {
-        //设置全局token并缓存token
         dispatch({
-          type: SET_TOKEN,
-          playload: 'token'
+          type: SET_USERINFO,
+          playload: res.data.data
         })
-        //Token 设置
-        // localStorage.setItem('token', res.data.datas.token)
       }
       reslove(res.data)
     })
@@ -32,27 +29,7 @@ const deleteToken = ()=> dispatch=>{
   window.location = '#/login'
 }
 
-const getUserInfo = () => dispatch => {
-  return new Promise(reslove=> {
-    api.post('/getUserInfo').then(res => {
-
-      // 获取用户信息成功，将用户信息保存到全局状态树
-
-      if (res.data.success) {
-
-        localStorage.setItem('userInfo', JSON.stringify(res.data.datas))
-
-        dispatch({
-          type: SET_USERINFO,
-          playload: res.data.datas
-        })
-      }
-      reslove(res.data.success)
-    })
-  })
-}
 export {
   login,
-  getUserInfo,
   deleteToken
 }

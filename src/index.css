@@ -140,6 +140,9 @@ body {
     padding: 8px;
     background-color: #fff !important;
 }
+.add-manager {
+    margin-bottom: 10px;
+}
 
 canvas {
     display: block;

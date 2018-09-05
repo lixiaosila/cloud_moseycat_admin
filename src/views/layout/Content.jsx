@@ -9,12 +9,14 @@ const { Content } = Layout
 
 
 
-const Main = ({ location }) => {
+const Main = ({ location, userInfo }) => {
 
-  const roles = localStorage.getItem('userInfo') && JSON.parse(localStorage.getItem('userInfo')).roles
+  const roles = ""
+  console.log('props', this, location, userInfo)
   const handleFilter = permission =>{
     // 过滤没有权限的页面
-      if(!permission ||permission===roles ) return true
+      console.log(this)
+      if(!permission || permission === roles ) return true
       return false
 
   }

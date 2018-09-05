@@ -2,7 +2,7 @@ import React from 'react'
 import {Layout, Icon, Popover,Avatar,Dropdown,Menu,Badge} from 'antd'
 import {connect} from 'react-redux'
 import {changeCollapsed} from '@/redux/actions'
-import {deleteToken,getUserInfo} from '@/redux/actions'
+import {deleteToken} from '@/redux/actions'
 
 import MenuList from './sider/Menu'
 import './index.less'
@@ -10,15 +10,15 @@ const {Header} = Layout
 
 const LayoutHeader = props => {
 
-  const {collapsed, changeCollapsed, isMobile,deleteToken,getUserInfo} = props
+  const {collapsed, changeCollapsed, isMobile,deleteToken} = props
   // 获取用户信息，如果state树没有数据，则读取缓存
 
-  const historyUserInfo = JSON.parse(localStorage.getItem('userInfo'))
+  const historyUserInfo = JSON.parse(localStorage.getItem('userInfo'));
+  let userInfo = props.userInfo ? props.userInfo : historyUserInfo;
+  userInfo.header =  "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2863156404,3882435418&fm=27&gp=0.jpg"
 
-  let userInfo = props.userInfo ? props.userInfo : historyUserInfo
-
-  if(!userInfo.roles){
-    // getUserInfo()
+  if(!userInfo.role){
+    
   }
 
   const handleLogout =() => deleteToken()
@@ -104,7 +104,7 @@ const LayoutHeader = props => {
             <div>
               <Avatar
                   size='large'
-                  src={userInfo.avatar}
+                  src={userInfo.header}
               />
               <Icon style={{color:'rgba(0,0,0,.3)'}}
                   type="caret-down"
@@ -132,6 +132,5 @@ const mapDispatchToProps = ({
     changeCollapsed(playload)
   },
   deleteToken:()=>deleteToken(),
-  getUserInfo:()=> getUserInfo()
 })
 export default connect(mapStateToProps, mapDispatchToProps)(LayoutHeader)

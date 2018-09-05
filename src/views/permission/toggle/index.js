@@ -202,13 +202,14 @@ class TableEdit extends Component {
 
     return (
       <div className='shadow-radius'>
-          <Table
-              bordered
-              columns={this.state.columns}
-              dataSource={this.state.data}
-              pagination={false}
-              rowKey={row => row.date}
-          />
+        <Button type="primary" className="add-manager">新增管理员</Button>
+        <Table
+            bordered
+            columns={this.state.columns}
+            dataSource={this.state.data}
+            pagination={false}
+            rowKey={row => row.date}
+        />
       </div>
     )
   }

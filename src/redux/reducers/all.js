@@ -2,22 +2,14 @@ const userState = {
   token: '',
   userInfo:{
     roles: '',
-    introduction: '',
+    header: '',
     name: '',
-    avatar: '',
-    message:''
+    mobile:''
   }
 }
 
 const user = (state = userState, action) => {
   switch (action.type) {
-    case 'SET_TOKEN':
-      return {
-        ...state,
-        token: action.playload
-      }
-      break
-
     case 'DELETE_TOKEN':
       return {
         ...state,

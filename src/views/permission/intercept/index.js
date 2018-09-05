@@ -1,6 +1,5 @@
 import React,{Component} from 'react'
 import { Radio , Row} from 'antd'
-import {getUserInfo} from '@/redux/actions'
 import {connect} from 'react-redux'
 
 const RadioGroup = Radio.Group
@@ -12,14 +11,9 @@ class Toggle extends Component {
     value: null
   }
 
-
   onChange = e => {
     const value = e.target.value
     this.setState({value})
-    // 重置token并且重新获取用户信息
-    this.props.setToken(value)
-    localStorage.setItem('token', value)
-    this.props.getUserInfo()
   }
   render(){
     return (
@@ -48,7 +42,6 @@ class Toggle extends Component {
 }
 const mapStateToProps = state => ({token: state.user.token})
 const mapDispatchToProps = ({
-  setToken: params=> ({type:'SET_TOKEN',playload:params}),
-  getUserInfo: () => getUserInfo()
+
 })
 export default connect(mapStateToProps, mapDispatchToProps)(Toggle)

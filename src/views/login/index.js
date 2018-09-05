@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import './index.less'
 import {connect} from 'react-redux'
 import {Button, Input, Icon, Form, Checkbox,Spin } from 'antd'
-import {login, getUserInfo} from '@/redux/actions'
+import {login} from '@/redux/actions'
 import PropTypes from 'prop-types'
 
 const FormItem = Form.Item
@@ -39,31 +39,17 @@ class Login extends Component {
     })
   }
 
-  setFromData = user => {
-    this.props.form.setFieldsValue({user,password:'123456'})
-  }
-
   login = formVal => {
     const { handleLogin } = this.props
     // 登录完成后 发送请求 调用接口获取用户信息
     handleLogin(formVal).then(res => {
-      res && this.goDashBoard()
+      res && this.goDashBoard();
     })
   }
 
-  // getUserInfo = ()=> {
-  //   // const { getUserInfo} = this.props;
-  //   let {history} = this.context.router;
-          
-  //   // // 发送请求 调用接口获取用户信息
-  //   // getUserInfo().then(status =>{
-  //   //   status && history.replace('/dashboard')
-  //   // })
-  //   history.replace('/dashboard')
-  // }
   goDashBoard() {
     let {history} = this.context.router;
-    history.replace('/table/edit')
+    history.replace('/table/edit');
   }
 
   render() {
@@ -125,8 +111,7 @@ class Login extends Component {
   }
 }
 const mapDispatchToProps = ({
-  handleLogin: params => login(params),
-  getUserInfo: () => getUserInfo()
+  handleLogin: params => login(params)
 })
 
 export default connect(state => ({collapsed: state.UI.taglist}), mapDispatchToProps)(Form.create()(Login))
