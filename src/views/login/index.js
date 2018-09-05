@@ -18,6 +18,7 @@ class Login extends Component {
   }
 
   componentDidMount(){
+    //获取用户信息
     const historyUser = localStorage.getItem('user')
     if(historyUser){
       const {user,password} = JSON.parse(historyUser)

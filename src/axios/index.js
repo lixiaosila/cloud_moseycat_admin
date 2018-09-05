@@ -5,7 +5,8 @@ import qs from 'qs'
 import {message} from 'antd'
 const api = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
-  timeout: 5000
+  timeout: 5000,
+  withCredentials: true // 允许携带cookie
 })
 
 //请求拦截
@@ -14,7 +15,6 @@ api
   .request
   .use(function (config) {
     // 在发送请求之前做些什么
-    console.log('config', config, config.data)
     // 通过reudx的store拿到拿到全局状态树的token ，添加到请求报文，后台会根据该报文返回status
     const token = store.getState().user.token || localStorage.getItem('token')
     config.headers['X-Token'] = token

@@ -12,10 +12,8 @@ const { Content } = Layout
 const Main = ({ location, userInfo }) => {
 
   const roles = ""
-  console.log('props', this, location, userInfo)
   const handleFilter = permission =>{
     // 过滤没有权限的页面
-      console.log(this)
       if(!permission || permission === roles ) return true
       return false
 

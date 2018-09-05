@@ -86,3 +86,40 @@
         }
     }
 }
+
+.common_edit {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+}
+.common_mask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.5);
+}
+.common_form {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    padding: 40px;
+    transform: translate3D(-50%, -50%, 0);
+    z-index: 2;
+    min-width: 400px;
+    text-align: center;
+    background: #fff;
+}
+.common_btn_wrap .ant-form-item-children {
+    display: block;
+    text-align: left;
+}
+.common_btn_wrap .common_btn_success {
+    margin-right: 20px;
+    margin-left: 20px;
+}
