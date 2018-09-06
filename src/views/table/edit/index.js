@@ -68,9 +68,10 @@ const data= [
 class TableEdit extends Component {
   state = {
     data,
-    editable: true,
+    editable: false,
     currentPage: 1,
     totalPage: 1,
+    currentData: {},
     columns : [
       {
         title: 'Name',
@@ -92,7 +93,7 @@ class TableEdit extends Component {
               <div>
                 <Button
                     ghost
-                    onClick={this.setEditable.bind(this,index)}
+                    onClick={this.setEditable.bind(this, row, text)}
                     style={{marginRight:12}}
                     type='primary'
                 >修改</Button>
@@ -121,17 +122,41 @@ class TableEdit extends Component {
     })
   }
   // 点击修改时，将当前行改成可编辑状态,并将当前Input的值修改为当前行name的值
-  setEditable(index){
+  setEditable(row){
+    console.log('row', row);
+    this.setState(
+      {
+        editable: true,
+        currentData: row
+      }
+    )
     console.log('12')
   }
 
   deleteRow(index) {
-    console.log('34')
+    let params = {
+      id: id
+    }
+    deleteTravels().then(res => {
+      console.log('res', res);
+    })
   }
   
+  handleConfirm = () =>{
+    console.log('1212')
+    this.handleCancel();
+  }
+  handleCancel = () => {
+    this.setState(
+      {
+        editable: false
+      }
+    )
+    
+  }
   render() {
-    let { editable, columns, data} = this.state;
-
+    let { editable, columns, data, currentData} = this.state;
+    let { handleConfirm, handleCancel } = this;
     return (
       <div className='shadow-radius'>
           <Table
@@ -141,7 +166,7 @@ class TableEdit extends Component {
               pagination={false}
               rowKey={row => row.date}
           />
-          <EditForm onShow = {editable}/>
+          <EditForm visible={editable} data={currentData} onConfirm={handleConfirm} onCancel={handleCancel}/>
       </div>
     )
   }

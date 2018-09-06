@@ -25,10 +25,10 @@ export const menus = [
     ],
   },
   {
-    path: '/permission', title: '权限管理', icon: 'rocket',
+    path: '/permission', title: '权限管理', icon: 'rocket', 
     children: [
       // { path: '/table/basic', title: '基础表格' },
-      { path: '/permission/manage', title: '管理员列表' },
+      { path: '/permission/manage', title: '管理员列表'},
       // { path: '/table/dynamic', title: '动态列表格' },
     ],
   },

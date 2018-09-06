@@ -17,7 +17,7 @@ const MenuComponent = props => {
 
   const handleFilter = permission =>{
     // 过滤没有权限的页面
-      if(!permission ||permission===roles ) return true
+      if(!permission || permission===roles ) return true
       return false
   }
 // 每次点击菜单栏时，判断tagslist数组有没存在当前path，如果没有，添加进去

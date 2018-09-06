@@ -1,5 +1,7 @@
 import React,{Component} from 'react'
-import { Table ,Button,Input,message,Popconfirm} from 'antd'
+import { Table ,Button, Input, message, Popconfirm} from 'antd'
+import { getTravels, putTravels, deleteTravels } from '@/server'
+import EditForm from './editForm';
 
 const data= [
   {
@@ -63,38 +65,17 @@ const data= [
     'date': '1970-03-04'
   }
 ]
-class TableEdit extends Component {
+class ManagerToggle extends Component {
   state = {
     data,
-    editable:[],
-    editValue:[],
-    columns :[
+    editable: false,
+    currentPage: 1,
+    totalPage: 1,
+    currentData: {},
+    columns : [
       {
         title: 'Name',
         dataIndex: 'name',
-        render: (name,row,index) => {
-          const editable = this.state.editable
-          return (
-            editable[index]?(
-              <span>
-                <Input
-                    onChange={
-                      this.changInputVal.bind(this,index)
-                    }
-                    style={{width:'60%',marginRight:10}}
-                    type='text'
-                    value={this.state.editValue[index]}
-                />
-                <Button
-                    onClick={this.save.bind(this,index)}
-                    type='primary'
-                >完成</Button>
-              </span>
-            ):(
-              `${name}`
-            )
-          )
-        },
         width: '22%'
       }, {
         title: 'Date',
@@ -108,111 +89,87 @@ class TableEdit extends Component {
         dataIndex: 'control',
         width: '18%',
         render: (text,row,index) => {
-          const editable = this.state.editable
             return (
-                    <div>
-                        {
-                          editable[index]?(
-                             <Button
-                                 onClick={this.cancel.bind(this,index)}
-                                 style={{marginRight:12}}
-                             >取消</Button>
-                            ):(
-                            <Button
-                                ghost
-                                onClick={this.setEditable.bind(this,index)}
-                                style={{marginRight:12}}
-                                type='primary'
-                            >修改</Button>
-                          )
-                        }
-                        <Popconfirm
-                            onConfirm={() => this.deleteRow(index)}
-                            title="确认删除?"
-                        >
-                          <Button
-                              ghost
-                              style={{marginRight:0}}
-                              type='danger'
-                          >删除</Button>
-                        </Popconfirm>
-
-                    </div>
+              <div>
+                <Button
+                    ghost
+                    onClick={this.setEditable.bind(this, row, text)}
+                    style={{marginRight:12}}
+                    type='primary'
+                >修改</Button>
+                <Popconfirm
+                    onConfirm={() => this.deleteRow(index)}
+                    title="确认删除?"
+                >
+                  <Button
+                      ghost
+                      style={{marginRight:0}}
+                      type='danger'
+                  >删除</Button>
+                </Popconfirm>
+              </div>
             )
         }
       }
     ]
   }
-
+  componentDidMount() {
+    this.getList();
+  }
+  getList() {
+    getTravels().then(res => {
+      console.log('res', res)
+    })
+  }
   // 点击修改时，将当前行改成可编辑状态,并将当前Input的值修改为当前行name的值
-  setEditable(index){
-    const newEditable= [...this.state.editable],newEditValue = [...this.state.editValue],name = this.state.data[index].name
-
-    newEditValue.splice(index,1,name)
-    newEditable.splice(index,1,true)
-
-    this.setState({editable:newEditable,editValue:newEditValue})
-  }
-
-  changInputVal(index,e){
-    const newData = [...this.state.editValue]
-    newData.splice(index,1,e.target.value)
-    this.setState({editValue:newData})
-  }
-
-  // 修改后保存
-  save(index) {
-    const inputVal =this.state.editValue[index].trim() ,newData =[...this.state.data]
-
-    // 当前行input框内容不为空时，保存
-    if(inputVal){
-      const item = newData[index]
-      newData.splice(index,1,{...item,name:inputVal})
-      this.setState({data:newData})
-      message.success('修改成功')
-      // 修改完成后 取消可编辑状态
-      this.cancel(index)
-    }
-
+  setEditable(row){
+    console.log('row', row);
+    this.setState(
+      {
+        editable: true,
+        currentData: row
+      }
+    )
+    console.log('12')
   }
 
   deleteRow(index) {
-    // 删除当前行的数据、编辑状态、编辑值
-    const newData =[...this.state.data]
-    newData.splice(index,1)
-
-    const newEditable =[...this.state.editable]
-    newEditable.splice(index,1)
-
-    const newEditValue =[...this.state.editValue]
-    newEditValue.splice(index,1)
-
-    this.setState({data:newData,editable:newEditValue,editValue:newEditable})
-
-    message.success('删除成功')
+    let params = {
+      id: id
+    }
+    deleteTravels().then(res => {
+      console.log('res', res);
+    })
   }
-  // 取消修改，将编辑状态改为false
-  cancel(index){
-    const newEditable = [...this.state.editable]
-    newEditable.splice(index,1,false)
-    this.setState({editable:newEditable})
+  
+  handleConfirm = () =>{
+    console.log('1212')
+    this.handleCancel();
   }
-
+  handleCancel = () => {
+    this.setState(
+      {
+        editable: false
+      }
+    )
+    
+  }
   render() {
-
+    let { editable, columns, data, currentData} = this.state;
+    let { handleConfirm, handleCancel } = this;
     return (
       <div className='shadow-radius'>
-        <Button type="primary" className="add-manager">新增管理员</Button>
-        <Table
-            bordered
-            columns={this.state.columns}
-            dataSource={this.state.data}
-            pagination={false}
-            rowKey={row => row.date}
-        />
+          <Table
+              bordered
+              columns={columns}
+              dataSource={data}
+              pagination={false}
+              rowKey={row => row.date}
+          />
+          <EditForm visible={editable} data={currentData} onConfirm={handleConfirm} onCancel={handleCancel}/>
       </div>
     )
   }
 }
 
-export default TableEdit
+export default ManagerToggle
