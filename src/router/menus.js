@@ -25,7 +25,7 @@ export const menus = [
     ],
   },
   {
-    path: '/permission', title: '权限管理', icon: 'rocket', 
+    path: '/permission', title: '权限管理', icon: 'rocket', permission: 'super',
     children: [
       // { path: '/table/basic', title: '基础表格' },
       { path: '/permission/manage', title: '管理员列表'},

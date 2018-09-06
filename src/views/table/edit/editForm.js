@@ -43,12 +43,6 @@ class App extends Component {
             >
                 <Form>
                     <FormItem
-                        label="手机号"
-                        labelCol={{ span: 7 }}
-                        wrapperCol={{ span: 15 }}
-                    >
-                    </FormItem>
-                    <FormItem
                         label="姓名"
                         labelCol={{ span: 7 }}
                         wrapperCol={{ span: 15 }}

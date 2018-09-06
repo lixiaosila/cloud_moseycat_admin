@@ -9,11 +9,13 @@ const SubMenu = Menu.SubMenu
 
 
 const MenuComponent = props => {
-  const { history } = props
+  const { history, userInfo } = props;
   // 当前选中的菜单栏,当前权限角色
-  const menuSelected = history.location.pathname, roles= localStorage.getItem('userInfo') && JSON.parse(localStorage.getItem('userInfo')).roles
+  const menuSelected = history.location.pathname;
   // 当前展开的菜单栏
   const menuOpened = `/${menuSelected.split('/')[1]}`
+  //
+  const roles = userInfo.role;
 
   const handleFilter = permission =>{
     // 过滤没有权限的页面
@@ -72,7 +74,10 @@ const MenuComponent = props => {
   )
 }
 
-const mapStateToProps = state => ({userInfo: state.user.userInfo,taglist: state.UI.taglist})
+const mapStateToProps = state => ({
+  userInfo: state.user.userInfo,
+  taglist: state.UI.taglist}
+)
 const mapDispatchToProps = dispatch => ({
   addTaglist: playload => {
     dispatch(addTaglist(playload))

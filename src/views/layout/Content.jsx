@@ -11,12 +11,12 @@ const { Content } = Layout
 
 const Main = ({ location, userInfo }) => {
 
-  const roles = userInfo.roles;
-  console.log('roles', roles)
+  const roles = userInfo.role;
+  console.log(userInfo,roles)
   const handleFilter = permission =>{
-    console.log('permission', permission, !permission ,permission === roles)
     // 过滤没有权限的页面
-      if(!permission || permission === roles ) return true
+      console.log(permission == roles,roles,permission)
+      if(!permission || permission == roles ) return true
       return false
 
   }

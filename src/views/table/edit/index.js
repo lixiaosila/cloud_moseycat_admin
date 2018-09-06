@@ -1,7 +1,8 @@
 import React,{Component} from 'react'
-import { Table ,Button, Input, message, Popconfirm} from 'antd'
+import { Table ,Button, Input, message, Popconfirm } from 'antd'
 import { getTravels, putTravels, deleteTravels } from '@/server'
 import EditForm from './editForm';
+
 
 class TableEdit extends Component {
   state = {
@@ -11,6 +12,10 @@ class TableEdit extends Component {
     totalPage: 1,
     totalCount: 1,
     currentData: {},
+    pagination: {
+      total: 1,
+      current: 1
+    },
     columns : [
       {
         title: '姓名',
@@ -65,7 +70,11 @@ class TableEdit extends Component {
         {
           data: res.data.list,
           totalPage: res.data.pageCount,
-          totalCount: res.data.total
+          totalCount: res.data.total,
+          pagination: {
+            total: res.data.total,
+            current: this.currentPage,
+          }
         }
       )
     })
@@ -111,7 +120,7 @@ class TableEdit extends Component {
   }
 
   render() {
-    let { editable, columns, data, currentData} = this.state;
+    let { editable, columns, data, currentData, pagination} = this.state;
     let { handleConfirm, handleCancel } = this;
     return (
       <div className='shadow-radius'>
@@ -120,7 +129,8 @@ class TableEdit extends Component {
               columns={columns}
               dataSource={data}
               pagination={false}
-              rowKey={row => row.date}
+              rowKey={row => row.id}
+              pagination={pagination}
           />
           <EditForm visible={editable} data={currentData} onConfirm={handleConfirm} onCancel={handleCancel}/>
       </div>

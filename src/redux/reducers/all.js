@@ -1,7 +1,7 @@
 const userState = {
   token: '',
   userInfo:{
-    roles: '',
+    role: '',
     header: '',
     name: '',
     mobile:''

@@ -144,7 +144,7 @@ class ManagerToggle extends Component {
               columns={columns}
               dataSource={data}
               pagination={false}
-              rowKey={row => row.date}
+              rowKey={row => row.id}
           />
           <EditForm visible={editable} data={currentData} onConfirm={handleEditConfirm} onCancel={handleCancel}/>
           <AddForm visible={addable} onConfirm={handleAddConfirm} onCancel={handleCancel} />

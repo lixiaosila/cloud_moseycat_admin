@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Provider} from 'react-redux'
-import { HashRouter as Router, Route, Switch} from 'react-router-dom'
+import { HashRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
 import Layout from './views/layout'
 import Login from './views/login'
 import store from '@/redux/store'
@@ -20,12 +20,17 @@ class App extends Component {
     return (
       <Provider store={store} >
         <Router>
+          
           <Switch>
+            <Route exact path="/" render={() => (
+                <Redirect to="/login"/>
+            )}/>
+
             <Route
                 component={Login}
-                exact
                 path='/login'
             />
+            
             <Route
                 component={Layout}
                 path='/'
