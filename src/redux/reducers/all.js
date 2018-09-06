@@ -36,6 +36,7 @@ const UIState = {
   taglist:[]
 }
 const UI = (state = UIState, action) => {
+  console.log(action.type)
   switch (action.type) {
     case 'CHANGE_ISMOBILE':
       return {

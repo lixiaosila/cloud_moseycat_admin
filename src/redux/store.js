@@ -6,6 +6,6 @@ const loggerMiddleware = createLogger()
 
 const store = createStore(
   reducers,
-  applyMiddleware(thunk, loggerMiddleware)
+  applyMiddleware(thunk)
 )
 export default store

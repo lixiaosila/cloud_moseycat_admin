@@ -10,9 +10,9 @@ const {Header} = Layout
 
 const LayoutHeader = props => {
 
-  const {collapsed, changeCollapsed, isMobile,deleteToken} = props
+  const {collapsed, changeCollapseds, isMobile,deleteToken} = props
   // 获取用户信息，如果state树没有数据，则读取缓存
-
+  console.log('collapsed', collapsed)
   const historyUserInfo = JSON.parse(localStorage.getItem('userInfo'));
   let userInfo = props.userInfo ? props.userInfo : historyUserInfo;
   userInfo.header =  "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2863156404,3882435418&fm=27&gp=0.jpg"
@@ -74,7 +74,7 @@ const LayoutHeader = props => {
               </span>
             </Popover>
           : <span className='trigger-wrap'
-              onClick={changeCollapsed.bind(this, !collapsed)}
+              onClick={changeCollapseds.bind('', {collapsed: !collapsed})}
             >
             <Icon
                 type={collapsed
@@ -127,9 +127,9 @@ const mapStateToProps = state => (
   }
 )
 
-const mapDispatchToProps = ({
-  changeCollapsed: playload => {
-    changeCollapsed(playload)
+const mapDispatchToProps = dispatch => ({
+  changeCollapseds: playload => {
+    dispatch(changeCollapsed(playload))
   },
   deleteToken:()=>deleteToken(),
 })

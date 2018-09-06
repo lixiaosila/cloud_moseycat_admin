@@ -8,10 +8,12 @@ const changeIsMobile = playload => ({
 })
 
 // 改变左侧菜单栏宽度（展开或者收缩）
-const changeCollapsed = playload => ({
+const changeCollapsed = playload =>({
   type: type.CHANGE_COLLAPSED,
   playload
 })
+ 
+
 
 // 减少tags标签页
 const cutTaglist = playload => ({
