@@ -5,21 +5,6 @@ const FormItem = Form.Item;
 
 class App extends Component {
 
-    componentDidMount(){
-        //获取用户信息
-        const { data } = this.props;
-        console.log('data', data)
-        if(!this.isEmpty(data)){
-            this.props.form.setFieldsValue(
-                {
-                    name: data.name,
-                    mobile: 123,
-                    place: 222,
-                    remark: 22
-                }
-            )
-        }
-    }
     isEmpty(data) {
         if (JSON.stringify(data) === '{}') {
             return true // 如果为空,返回false
@@ -31,6 +16,7 @@ class App extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
+                this.props.onConfirm(values);
                 this.props.form.resetFields();
                 this.props.onCancel();
             }
@@ -57,6 +43,12 @@ class App extends Component {
             >
                 <Form>
                     <FormItem
+                        label="手机号"
+                        labelCol={{ span: 7 }}
+                        wrapperCol={{ span: 15 }}
+                    >
+                    </FormItem>
+                    <FormItem
                         label="姓名"
                         labelCol={{ span: 7 }}
                         wrapperCol={{ span: 15 }}
@@ -74,8 +66,8 @@ class App extends Component {
                         wrapperCol={{ span: 15 }}
                     >
                     {getFieldDecorator('mobile', {
-                        initialValue: data.name,
-                        rules: [{ required: true, message: '请填写正确的手机号' }],
+                        initialValue: data.mobile,
+                        rules: [{ required: true, message: '请填写正确的手机号', pattern:/^((1[3-8][0-9])+\d{8})$/ }],
                     })(
                         <Input />
                     )}
@@ -86,7 +78,7 @@ class App extends Component {
                         wrapperCol={{ span: 15 }}
                     >
                     {getFieldDecorator('place', {
-                        initialValue: data.name,
+                        initialValue: data.place,
                         rules: [],
                     })(
                         <Input />
@@ -98,10 +90,10 @@ class App extends Component {
                         wrapperCol={{ span: 15 }}
                     >
                     {getFieldDecorator('remark', {
-                        initialValue: data.name,
+                        initialValue: data.remark,
                         rules: [],
                     })(
-                        <Input.TextArea type="textarea" placeholder="自适应内容高度" autosize = {{ minRows: 2, maxRows: 6 }} />
+                        <Input.TextArea type="textarea" placeholder="定制需求" autosize = {{ minRows: 2, maxRows: 6 }} />
                     )}
                     </FormItem>
                 </Form>

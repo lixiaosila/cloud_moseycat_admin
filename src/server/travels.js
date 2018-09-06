@@ -1,5 +1,4 @@
 import api from '@/axios'
-import { message } from 'antd'
 
 const getTravels = params  => {
     return new Promise(reslove => {
@@ -14,7 +13,7 @@ const getTravels = params  => {
 
 const putTravels = params  => {
     return new Promise(reslove => {
-        api.put('/admin/travels', params).then(res => {
+        api.put(`/admin/travels/${params.id}`, params).then(res => {
             if (res.data.code == 1) {
 
             }
@@ -25,7 +24,7 @@ const putTravels = params  => {
 
 const deleteTravels = params  => {
     return new Promise(reslove => {
-        api.delte(`/admin/travels:${params.id}`).then(res => {
+        api.delete(`/admin/travels/${params.id}`).then(res => {
             if (res.data.code == 1) {
 
             }

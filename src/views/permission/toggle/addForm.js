@@ -29,7 +29,7 @@ class App extends Component {
     }
 
     render() {
-        let { visible, data } = this.props;
+        let { visible } = this.props;
         let { handleSubmit, handleCancel } = this;
         const { getFieldDecorator } = this.props.form;
         return (
@@ -43,13 +43,23 @@ class App extends Component {
             >
                 <Form>
                     <FormItem
-                        label="姓名"
+                        label="用户名"
                         labelCol={{ span: 7 }}
                         wrapperCol={{ span: 15 }}
                     >
                     {getFieldDecorator('name', {
-                        initialValue: data.name,
-                        rules: [{ required: true, message: '请输入姓名' }],
+                        rules: [{ required: true, message: '请填写用户名' }],
+                    })(
+                        <Input />
+                    )}
+                    </FormItem>
+                    <FormItem
+                        label="密码"
+                        labelCol={{ span: 7 }}
+                        wrapperCol={{ span: 15 }}
+                    >
+                    {getFieldDecorator('password', {
+                        rules: [{ required: true, message: '请填写密码'}],
                     })(
                         <Input />
                     )}
@@ -60,7 +70,6 @@ class App extends Component {
                         wrapperCol={{ span: 15 }}
                     >
                     {getFieldDecorator('mobile', {
-                        initialValue: data.mobile,
                         rules: [{ required: true, message: '请填写正确的手机号', pattern:/^((1[3-8][0-9])+\d{8})$/ }],
                     })(
                         <Input />

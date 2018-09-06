@@ -156,3 +156,6 @@ canvas {
 .ant-spin-container {
     overflow: visible !important;
 }
+.add_manage {
+    margin: 10px 0 12px;
+}
