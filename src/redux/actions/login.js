@@ -20,8 +20,7 @@ const login = params => dispatch => {
   })
 }
 
-const deleteToken = ()=> dispatch=>{
-  localStorage.removeItem('token')
+const deleteToken = () => dispatch=>{
   dispatch({
     type: DELETE_TOKEN
   })

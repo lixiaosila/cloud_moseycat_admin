@@ -86,7 +86,7 @@ choosePort(HOST, DEFAULT_PORT)
   })
   .catch(err => {
     if (err && err.message) {
-      console.log(err.message);
+      
     }
     process.exit(1);
   });

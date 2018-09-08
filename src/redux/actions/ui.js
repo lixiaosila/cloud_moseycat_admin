@@ -12,8 +12,12 @@ const changeCollapsed = playload =>({
   type: type.CHANGE_COLLAPSED,
   playload
 })
- 
 
+// 获取登录态状态
+const getConfig = playload => ({
+  type: type.SET_USERINFO,
+  playload
+})
 
 // 减少tags标签页
 const cutTaglist = playload => ({
@@ -65,5 +69,6 @@ export {
   changeCollapsed,
   addTaglist,
   cutTaglist,
-  emptyTaglist
+  emptyTaglist,
+  getConfig
 }

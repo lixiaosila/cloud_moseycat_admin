@@ -14,7 +14,6 @@ const Main = ({ location, userInfo }) => {
   const roles = userInfo.role;
   const handleFilter = permission =>{
     // 过滤没有权限的页面
-      console.log(permission == roles,roles,permission)
       if(!permission || permission == roles ) return true
       return false
 

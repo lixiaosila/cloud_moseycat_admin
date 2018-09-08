@@ -8,7 +8,8 @@ import {
     addAdmin,
     deleteAdmin,
     putAdmin,
-    getAdmin 
+    getAdmin ,
+    getUser
 } from './manage'
 
 export {
@@ -18,5 +19,6 @@ export {
     addAdmin,
     deleteAdmin,
     putAdmin,
-    getAdmin
+    getAdmin,
+    getUser
 }

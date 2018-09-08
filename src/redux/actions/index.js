@@ -1,5 +1,5 @@
 import { login,deleteToken } from './login'
-import  { changeIsMobile,changeCollapsed,addTaglist,cutTaglist,emptyTaglist } from './ui'
+import  { changeIsMobile, changeCollapsed, addTaglist, cutTaglist, emptyTaglist, getConfig } from './ui'
 
 export {
   login,
@@ -8,6 +8,7 @@ export {
   changeCollapsed,
   addTaglist,
   cutTaglist,
-  emptyTaglist
+  emptyTaglist,
+  getConfig
 }
 

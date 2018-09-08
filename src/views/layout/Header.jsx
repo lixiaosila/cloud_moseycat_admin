@@ -10,18 +10,14 @@ const {Header} = Layout
 
 const LayoutHeader = props => {
 
-  const {collapsed, changeCollapseds, isMobile,deleteToken} = props
+  const {collapsed, changeCollapseds, isMobile, deleteToken} = props
   // 获取用户信息，如果state树没有数据，则读取缓存
-  console.log('collapsed', collapsed)
-  const historyUserInfo = JSON.parse(localStorage.getItem('userInfo'));
-  let userInfo = props.userInfo ? props.userInfo : historyUserInfo;
+  let userInfo = props.userInfo;
   userInfo.header =  "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2863156404,3882435418&fm=27&gp=0.jpg"
 
-  if(!userInfo.role){
-    
+  const handleLogout =() => {
+    deleteToken()
   }
-
-  const handleLogout =() => deleteToken()
 
 
   const DropdownList = (
@@ -29,20 +25,6 @@ const LayoutHeader = props => {
       <Menu.Item key='user'>
         <Icon type='user'/>
          {userInfo.name}
-      </Menu.Item>
-      <Menu.Item
-          disabled
-          key='edit'
-      >
-        <Icon type='edit'/>
-        个人设置
-      </Menu.Item>
-      <Menu.Item
-          disabled
-          key='setting'
-      >
-        <Icon type='setting'/>
-        系统设置
       </Menu.Item>
       <Menu.Item
           key='logout'
@@ -74,7 +56,7 @@ const LayoutHeader = props => {
               </span>
             </Popover>
           : <span className='trigger-wrap'
-              onClick={changeCollapseds.bind('', {collapsed: !collapsed})}
+              onClick={changeCollapseds.bind('', !collapsed)}
             >
             <Icon
                 type={collapsed
@@ -123,7 +105,7 @@ const mapStateToProps = state => (
   {
     collapsed: state.UI.collapsed,
     isMobile: state.UI.isMobile,
-    userInfo:state.user.userInfo
+    userInfo: state.user.userInfo
   }
 )
 
@@ -131,6 +113,8 @@ const mapDispatchToProps = dispatch => ({
   changeCollapseds: playload => {
     dispatch(changeCollapsed(playload))
   },
-  deleteToken:()=>deleteToken(),
+  deleteToken: playload=> {
+    dispatch(deleteToken(playload))
+  },
 })
 export default connect(mapStateToProps, mapDispatchToProps)(LayoutHeader)

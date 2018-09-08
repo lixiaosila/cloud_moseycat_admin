@@ -7,23 +7,37 @@ import Header from './Header'
 import Sider from './sider'
 import Tabs from './tags'
 import { debounce } from '@/utils'
-import { changeIsMobile, changeCollapsed } from '@/redux/actions'
-
+import { changeIsMobile, changeCollapsed, getConfig } from '@/redux/actions'
+import { getUser } from '@/server'
 
 class LayoutComponent extends Component {
 
   componentWillMount () {
-    this.getClientWidth()
+    this.getClientWidth();
     // 节流函数
     window.onresize = debounce(this.getClientWidth, 100)
   }
-
+  componentDidMount() {
+    const { userInfo } = this.props;
+    if(!userInfo.role) {
+      this.getUserInfo()
+    }
+  }
+  getUserInfo() {
+    const { fetchUser } = this.props;
+    getUser().then(
+      res => {
+        if(res.code == 1) {
+          fetchUser(res.data);
+        }
+      }
+    ) 
+  }
   getClientWidth = () => {
     // 通过context上下文拿到store的dispatch事件,发起action修改store状态树
     const { changeCollapsed,changeIsMobile } = this.props, clientWidth = document.body.clientWidth;
     changeIsMobile(clientWidth <= 992)
     changeCollapsed(clientWidth <= 992)
-    console.log(`当前屏幕宽度：${clientWidth}`)
   }
   render () {
     const {collapsed,isMobile} = this.props
@@ -45,7 +59,8 @@ class LayoutComponent extends Component {
 const mapStateToProps = state => (
   {
     collapsed: state.UI.collapsed,
-    isMobile: state.UI.isMobile
+    isMobile: state.UI.isMobile,
+    userInfo: state.user.userInfo
   }
 )
 
@@ -55,6 +70,9 @@ const mapDispatchToProps = dispatch => ({
   },
   changeIsMobile:playload => {
     dispatch(changeIsMobile(playload))
+  },
+  fetchUser: playload => {
+    dispatch(getConfig(playload))
   },
 })
 export default connect(mapStateToProps, mapDispatchToProps)(LayoutComponent)

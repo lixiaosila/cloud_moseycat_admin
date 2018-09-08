@@ -3,6 +3,10 @@ import store from '@/redux/store'
 import qs from 'qs'
 
 import {message} from 'antd'
+message.config({
+  maxCount: 1,
+});
+
 const api = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
   timeout: 5000,
@@ -37,7 +41,7 @@ api
   .response
   .use(function (response) {
     // 对响应数据做点什么
-    if (response.data.code != 1) {
+    if (response.data.code != 1) { 
       message.error(response.data.msg)
     }
     

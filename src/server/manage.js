@@ -44,9 +44,20 @@ const addAdmin = params  => {
     })
 }
 
+const getUser = params  => {
+    return new Promise(reslove => {
+        api.get('/admin/currentUser', params).then(res => {
+            if (res.data.code == 1) {
+
+            }
+            reslove(res.data)
+        })
+    })
+}
 export {
     addAdmin,
     deleteAdmin,
     putAdmin,
-    getAdmin
+    getAdmin,
+    getUser
 }

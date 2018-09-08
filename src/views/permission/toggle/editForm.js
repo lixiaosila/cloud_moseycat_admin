@@ -15,7 +15,6 @@ class App extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
                 this.props.onConfirm(values);
                 this.props.form.resetFields();
                 this.props.onCancel();

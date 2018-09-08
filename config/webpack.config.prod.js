@@ -16,7 +16,6 @@ const getClientEnvironment = require('./env');
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
 const publicPath = "";
-console.log('publicPath', publicPath)
 // Some apps do not use client-side routing with pushState.
 // For these, "homepage" can be set to "." to enable relative asset paths.
 const shouldUseRelativeAssetPaths = publicPath === './';
@@ -355,7 +354,6 @@ module.exports = {
           // https://github.com/facebookincubator/create-react-app/issues/2612
           return;
         }
-        console.log(message);
       },
       minify: true,
       // For unknown URLs, fallback to the index page

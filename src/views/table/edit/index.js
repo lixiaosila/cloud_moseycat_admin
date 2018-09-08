@@ -32,9 +32,19 @@ class TableEdit extends Component {
         title: '定制需求',
         dataIndex: 'remark'
       },{
+        title: '状态',
+        dataIndex: 'status',
+        render: (text,row,index) => {
+          return (
+            <span>
+              {row.status == 0 ? "进行中" : row.status == 1 ? "已完成" : "取消"}
+            </span>
+          )
+        }
+      },{
         title:'留言',
         dataIndex: 'control',
-        width: '18%',
+        width: '22%',
         render: (text,row,index) => {
             return (
               <div>
@@ -54,6 +64,12 @@ class TableEdit extends Component {
                       type='danger'
                   >删除</Button>
                 </Popconfirm>
+                <Button
+                    ghost
+                    onClick={this.cancel.bind(this, row, text)}
+                    style={{marginRight:12}}
+                    type='primary'
+                >取消</Button>
               </div>
             )
         }
@@ -65,7 +81,6 @@ class TableEdit extends Component {
   }
   getList() {
     getTravels().then(res => {
-      console.log('res', res)
       this.setState(
         {
           data: res.data.list,
@@ -88,9 +103,11 @@ class TableEdit extends Component {
       }
     )
   }
+  cancel() {
+
+  }
 
   deleteRow(values) {
-    console.log('values', values)
     deleteTravels(values).then(
       res => {
         this.getList();
