@@ -60,55 +60,58 @@ class Login extends Component {
     return (
 
         <div className='login-container'>
-          <Form
-              className='content'
-              onSubmit={this.handleSubmit}
-          >
-            <FormItem>
-              {getFieldDecorator('user', {
-                rules: [{ required: true, message: '请输入账号!' }],
-              })(
-                <Input
-                    placeholder="User"
-                    prefix={
-                      <Icon
-                          style={{ color: 'rgba(0,0,0,.25)' }}
-                          type="user"
-                      />}
-                />
-              )}
-            </FormItem>
-            <FormItem>
-              {getFieldDecorator('password', {
-                rules: [{ required: true, message: '请输入密码!' }]
-              })(
-                <Input
-                    placeholder="Password"
-                    prefix={
-                      <Icon
-                          style={{ color: 'rgba(0,0,0,.25)' }}
-                          type="lock"
-                      />}
-                    type="password"
-                />
-              )}
-            </FormItem>
-            <FormItem>
-                {getFieldDecorator('remember', {
-                  valuePropName: 'checked'
+          <div className="login-form">
+            <Form
+                className='content'
+                onSubmit={this.handleSubmit}
+            >
+              <FormItem className="logo-wrap">
+                <div className="logo">
+                </div>
+                <div className="text">
+                </div>
+              </FormItem>
+              <FormItem>
+                {getFieldDecorator('user', {
+                  rules: [{ required: true, message: '请输入账号!' }],
                 })(
-                  <Checkbox>记住密码</Checkbox>
+                  
+                  <Input
+                      placeholder="账号"
+                      prefix={
+                        <Icon
+                            style={{ color: 'rgba(0,0,0,.25)' }}
+                            type="user"
+                        />}
+                  />
                 )}
-                <a className='login-form-forgot'>忘记密码</a>
-                <Button
-                    className='login-form-button'
-                    htmlType='submit'
-                    type='primary'
-                >
-                  登录
-                </Button>
-            </FormItem>
-          </Form>
+              </FormItem>
+              <FormItem>
+                {getFieldDecorator('password', {
+                  rules: [{ required: true, message: '请输入密码!' }]
+                })(
+                  <Input
+                      placeholder="密码"
+                      prefix={
+                        <Icon
+                            style={{ color: 'rgba(0,0,0,.25)' }}
+                            type="lock"
+                        />}
+                      type="password"
+                  />
+                )}
+              </FormItem>
+              <FormItem>
+                  <Button
+                      className='login-form-button'
+                      htmlType='submit'
+                  >
+                    登录
+                  </Button>
+              </FormItem>
+            </Form>
+          </div>
+          
         </div>
     )
   }

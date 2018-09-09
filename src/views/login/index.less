@@ -1,59 +1,73 @@
 .login-container {
-    background-color:#E9F0F5;
-    height: 100%;
-    overflow: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  background: url('../../images/admin_bg.png') no-repeat;
+  background-size: 100% 100%;
+  .login-form {
     position: relative;
-    &>.title {
-        color: #eee;
-        font-size: 26px;
-        font-weight: 400;
-        margin: 0px auto 30px auto;
-        text-align: center;
-        font-weight: bold;
-        letter-spacing: 1px;
-    }
-    .spin-wrap {
-        text-align: center;
-        background-color: rgba(255,255,255,.3);
-        border-radius: 4px;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100vw;
-        height: 100vh;
-        line-height: 90vh;
-        z-index: 999;
-    }
+    width: 50%;
+    background: url('../../images/admin_layer.png') no-repeat;
+    background-size: 100% 100%;
     .content {
-        position: absolute;
-        background-color: #fff;
-        left: 50%;
-        top: 50%;
-        width: 320px;
-        padding: 30px 30px 0 30px;
-        transform: translate(-50%,-60%);
-        box-shadow: 0 0 10px 2px rgba(40, 138, 204, 0.16);
-        border-radius: 3px;
-
-        .two-button-wrap {
-          display: flex;
-          justify-content: space-between;
-        }
-
-        .row-container {
-          display: flex;
-          justify-content: space-between;
-        }
-
-        .user-type-button {
-          width: 45%;
-        }
-     
-        .login-form-button {
-          width: 100%;
-        }
-        .login-form-forgot {
-          float: right;
-        }
+      width: 48%;
+      position: absolute;
+      left: 16%;
+      top: 50%;
+      transform: translate3d(0,-50%,0);
     }
+    .login-form-button {
+      border: 0;
+      width: 100%;
+      height: 40px;
+      line-height: 40px;
+      margin-top: 30px;
+      background: #ffd91f;
+      outline: none;
+      color: #000;
+    }
+    button {
+      outline:none !important;
+    }
+    
+    .ant-input-prefix {
+      left: 0;
+      font-size: 20px;
+      border: 1px solid #dad8d7;
+      height: 100%;
+      padding-top: 5px;
+      width: 30px;
+      line-height: 30px;
+      text-align: center;
+    }
+    .ant-input {
+      height: 40px;
+      line-height: 40px;
+      padding-left: 40px
+    }
+    .logo-wrap {
+      .ant-form-item-children {
+        display: flex;
+      }
+      margin-bottom: 6em;
+      padding: 0 12px;
+    }
+    .logo {
+      width: 26%;
+      height: 4.4em;
+      background: url('../../images/admin_logo.png') no-repeat;
+      background-size: contain;
+    }
+    .text {
+      margin-left: 20px;
+      flex: 1;
+      height: 4.4em;
+      background: url('../../images/admin_text.png') no-repeat;
+      background-size: contain;
+      background-position-x: right;
+    }
+  }
 }

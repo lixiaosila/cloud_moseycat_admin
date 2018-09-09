@@ -6,7 +6,8 @@ import {deleteToken} from '@/redux/actions'
 
 import MenuList from './sider/Menu'
 import './index.less'
-const {Header} = Layout
+const {Header} = Layout;
+import header from '../../images/admin_logo.png';
 
 const LayoutHeader = props => {
 
@@ -86,7 +87,7 @@ const LayoutHeader = props => {
             <div>
               <Avatar
                   size='large'
-                  src={userInfo.header}
+                  src={header}
               />
               <Icon style={{color:'rgba(0,0,0,.3)'}}
                   type="caret-down"
