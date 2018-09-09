@@ -30,7 +30,7 @@ class ManagerToggle extends Component {
           )
         }
       },{
-        title:'handle',
+        title:'操作',
         dataIndex: 'control',
         width: '18%',
         render: (text,row,index) => {

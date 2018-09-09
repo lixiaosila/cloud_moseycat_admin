@@ -69,14 +69,6 @@ const LayoutHeader = props => {
       </div>
 
       <div className='header-right'>
-        <div className='news-wrap'>
-         <Badge count={userInfo.message}>
-          <Icon
-              style={{fontSize:'20px'}}
-              type="bell"
-          />
-        </Badge>
-        </div>
         <div className='dropdown-wrap'
             id='dropdown-wrap'
         >

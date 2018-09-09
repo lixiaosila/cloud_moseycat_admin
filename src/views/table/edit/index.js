@@ -42,7 +42,7 @@ class TableEdit extends Component {
           )
         }
       },{
-        title:'留言',
+        title:'操作',
         dataIndex: 'control',
         width: '22%',
         render: (text,row,index) => {
@@ -51,7 +51,7 @@ class TableEdit extends Component {
                 <Button
                     ghost
                     onClick={this.setEditable.bind(this, row, text)}
-                    style={{marginRight:12}}
+                    style={{marginRight:6}}
                     type='primary'
                 >修改</Button>
                 <Popconfirm
@@ -60,14 +60,14 @@ class TableEdit extends Component {
                 >
                   <Button
                       ghost
-                      style={{marginRight:0}}
+                      style={{marginRight:6}}
                       type='danger'
                   >删除</Button>
                 </Popconfirm>
                 <Button
                     ghost
                     onClick={this.cancel.bind(this, row, text)}
-                    style={{marginRight:12}}
+                    style={{marginRight:0}}
                     type='primary'
                 >取消</Button>
               </div>
@@ -103,8 +103,16 @@ class TableEdit extends Component {
       }
     )
   }
-  cancel() {
+  cancel(row) {
+    // status 为2代表取消
+    let params = Object.assign({}, row, {status: 2});
 
+    putTravels(params).then(
+      res => {
+        this.getList();
+        message.success("取消成功");
+      }
+    )
   }
 
   deleteRow(values) {
