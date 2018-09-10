@@ -16,11 +16,9 @@ class ManagerToggle extends Component {
       {
         title: '姓名',
         dataIndex: 'name',
-        width: '22%'
       }, {
         title: '手机号',
         dataIndex: 'mobile',
-        width: '22%',
       }, {
         title: '角色',
         dataIndex: 'email',
@@ -32,7 +30,7 @@ class ManagerToggle extends Component {
       },{
         title:'操作',
         dataIndex: 'control',
-        width: '18%',
+        width: '22%',
         render: (text,row,index) => {
             return (
               <div>

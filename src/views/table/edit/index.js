@@ -20,17 +20,16 @@ class TableEdit extends Component {
       {
         title: '姓名',
         dataIndex: 'name',
-        width: '22%'
       }, {
         title: '手机号',
         dataIndex: 'mobile',
-        width: '22%',
       }, {
         title: '目的地',
         dataIndex: 'place'
       },{
         title: '定制需求',
-        dataIndex: 'remark'
+        dataIndex: 'remark',
+        width: '22%'
       },{
         title: '状态',
         dataIndex: 'status',
@@ -44,7 +43,7 @@ class TableEdit extends Component {
       },{
         title:'操作',
         dataIndex: 'control',
-        width: '22%',
+        width: '30%',
         render: (text,row,index) => {
             return (
               <div>
@@ -67,9 +66,15 @@ class TableEdit extends Component {
                 <Button
                     ghost
                     onClick={this.cancel.bind(this, row, text)}
-                    style={{marginRight:0}}
+                    style={{marginRight:6}}
                     type='primary'
                 >取消</Button>
+                <Button
+                    ghost
+                    onClick={this.finish.bind(this, row, text)}
+                    style={{marginRight:0}}
+                    type='primary'
+                >已完成</Button>
               </div>
             )
         }
@@ -111,6 +116,18 @@ class TableEdit extends Component {
       res => {
         this.getList();
         message.success("取消成功");
+      }
+    )
+  }
+
+  finish(row) {
+    // status 为1代表wanc
+    let params = Object.assign({}, row, {status: 1});
+
+    putTravels(params).then(
+      res => {
+        this.getList();
+        message.success("更新成功");
       }
     )
   }
