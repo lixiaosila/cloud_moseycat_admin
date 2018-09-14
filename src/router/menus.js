@@ -20,7 +20,7 @@ export const menus = [
     path: '/table', title: '信息管理', icon: 'copy',
     children: [
       // { path: '/table/basic', title: '基础表格' },
-      { path: '/table/edit', title: '用户列表' },
+      { path: '/table/edit', title: '订单列表' },
       // { path: '/table/dynamic', title: '动态列表格' },
     ],
   },

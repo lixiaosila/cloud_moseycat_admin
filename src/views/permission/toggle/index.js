@@ -12,6 +12,11 @@ class ManagerToggle extends Component {
     currentPage: 1,
     totalPage: 1,
     currentData: {},
+    pagination: {
+      total: 1,
+      current: 1,
+      pageSize: 20
+    },
     columns : [
       {
         title: '姓名',
@@ -59,13 +64,25 @@ class ManagerToggle extends Component {
   componentDidMount() {
     this.getList();
   }
-  getList() {
-    getAdmin().then(res => {
+  getList(page = 1) {
+    let params = {
+      page: page
+    }
+    this.setState(
+      {
+        loading: true
+      }
+    )
+    getAdmin(params).then(res => {
       this.setState(
         {
           data: res.data.list,
-          totalPage: res.data.pageCount,
-          totalCount: res.data.total
+          loading: false,
+          pagination: {
+            total: res.data.total,
+            current: this.state.currentPage,
+            pageSize: 20
+          }
         }
       )
     })
@@ -129,9 +146,21 @@ class ManagerToggle extends Component {
     )
   }
 
+  handlePage = (currentPage) => {
+    this.setState(
+      {
+        currentPage: currentPage
+      }
+    )
+    this.getList(currentPage)
+  }
+
   render() {
-    let { editable, addable, columns, data, currentData} = this.state;
-    let { handleEditConfirm, handleAddConfirm, handleCancel, handleAdd } = this;
+    let { editable, addable, columns, data, currentData, loading, pagination} = this.state;
+    let { handleEditConfirm, handleAddConfirm, handleCancel, handleAdd, handlePage } = this;
+    let pageConfig = Object.assign({},pagination, {
+      onChange: handlePage
+    })
     return (
       <div className='shadow-radius'>
           <Button type="primary" className="add_manage" onClick={handleAdd}>
@@ -141,8 +170,9 @@ class ManagerToggle extends Component {
               bordered
               columns={columns}
               dataSource={data}
-              pagination={false}
+              pagination={pageConfig}
               rowKey={row => row.id}
+              loading={loading}
           />
           <EditForm visible={editable} data={currentData} onConfirm={handleEditConfirm} onCancel={handleCancel}/>
           <AddForm visible={addable} onConfirm={handleAddConfirm} onCancel={handleCancel} />

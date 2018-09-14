@@ -9,12 +9,12 @@ class TableEdit extends Component {
     data: [],
     editable: false,
     currentPage: 1,
-    totalPage: 1,
-    totalCount: 1,
+    loading: false,
     currentData: {},
     pagination: {
       total: 1,
-      current: 1
+      current: 1,
+      pageSize: 20
     },
     columns : [
       {
@@ -84,16 +84,25 @@ class TableEdit extends Component {
   componentDidMount() {
     this.getList();
   }
-  getList() {
-    getTravels().then(res => {
+  getList(page = 1) {
+    let params = {
+      page: page
+    }
+    this.setState(
+      {
+        loading: true
+      }
+    )
+    console.log('params', page, params, this.currentPage, this.state.currentPage)
+    getTravels(params).then(res => {
       this.setState(
         {
           data: res.data.list,
-          totalPage: res.data.pageCount,
-          totalCount: res.data.total,
+          loading: false,
           pagination: {
             total: res.data.total,
-            current: this.currentPage,
+            current: this.state.currentPage,
+            pageSize: 20,
           }
         }
       )
@@ -160,19 +169,32 @@ class TableEdit extends Component {
       }
     )
   }
-
+  handlePage = (currentPage) => {
+    console.log('12', currentPage)
+    this.setState(
+      {
+        currentPage: currentPage
+      }
+    )
+    this.getList(currentPage)
+  }
   render() {
-    let { editable, columns, data, currentData, pagination} = this.state;
-    let { handleConfirm, handleCancel } = this;
+    let { editable, columns, data, currentData, pagination, loading} = this.state;
+    let { handleConfirm, handleCancel, handlePage } = this;
+    console.log('pagination', loading)
+    let pageConfig = Object.assign({}, pagination, {
+      onChange: handlePage
+    })
+    console.log('pageConfig1212', pageConfig, pagination)
     return (
       <div className='shadow-radius'>
           <Table
               bordered
               columns={columns}
               dataSource={data}
-              pagination={false}
               rowKey={row => row.id}
-              pagination={pagination}
+              pagination={pageConfig}
+              loading={loading}
           />
           <EditForm visible={editable} data={currentData} onConfirm={handleConfirm} onCancel={handleCancel}/>
       </div>
