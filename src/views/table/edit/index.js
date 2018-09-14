@@ -93,7 +93,6 @@ class TableEdit extends Component {
         loading: true
       }
     )
-    console.log('params', page, params, this.currentPage, this.state.currentPage)
     getTravels(params).then(res => {
       this.setState(
         {
@@ -170,7 +169,6 @@ class TableEdit extends Component {
     )
   }
   handlePage = (currentPage) => {
-    console.log('12', currentPage)
     this.setState(
       {
         currentPage: currentPage
@@ -181,11 +179,9 @@ class TableEdit extends Component {
   render() {
     let { editable, columns, data, currentData, pagination, loading} = this.state;
     let { handleConfirm, handleCancel, handlePage } = this;
-    console.log('pagination', loading)
     let pageConfig = Object.assign({}, pagination, {
       onChange: handlePage
     })
-    console.log('pageConfig1212', pageConfig, pagination)
     return (
       <div className='shadow-radius'>
           <Table
