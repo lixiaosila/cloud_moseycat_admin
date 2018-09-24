@@ -3,6 +3,7 @@ import { Table ,Button, Input, message, Popconfirm } from 'antd'
 import { getTravels, putTravels, deleteTravels } from '@/server'
 import EditForm from './editForm';
 
+const Search = Input.Search;
 
 class TableEdit extends Component {
   state = {
@@ -184,6 +185,15 @@ class TableEdit extends Component {
     })
     return (
       <div className='shadow-radius'>
+          <div style={{ textAlign: "right" }}>
+            <Search
+              placeholder="请输入姓名或手机号"
+              onSearch={value => console.log(value)}
+              enterButton
+              style={{ width: 200, marginBottom: '20px' }}
+            />
+          </div>
+          
           <Table
               bordered
               columns={columns}

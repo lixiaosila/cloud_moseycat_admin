@@ -12,6 +12,10 @@ import {
     getUser
 } from './manage'
 
+import {  
+    getCharts,
+} from './charts'
+
 export {
     getTravels,
     putTravels,
@@ -20,5 +24,6 @@ export {
     deleteAdmin,
     putAdmin,
     getAdmin,
-    getUser
+    getUser,
+    getCharts
 }

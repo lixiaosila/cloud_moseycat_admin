@@ -6,49 +6,46 @@ import { routes } from '@/router'
 import { connect } from 'react-redux'
 
 const { Content } = Layout
+class Main extends React.Component {
 
-
-
-const Main = ({ location, userInfo }) => {
-
-  const roles = userInfo.role;
-  const handleFilter = permission =>{
-    // 过滤没有权限的页面
-      if(!permission || permission == roles ) return true
-      return false
-
+  handleFilter = permission => {
+    let { userInfo } = this.props;
+    let roles = userInfo.role;
+    if(!permission || permission == roles ) return true
+    return false
   }
 
-  return (
-    <TransitionGroup>
-      <CSSTransition
-          classNames="fade"
-          key={location.pathname}
-          timeout={500}
-      >
-        <Content style={{ margin: '12px 10px'}}>
-          <Switch>
-            {
-              routes.map(ele => {
-                return handleFilter(ele.permission) && <Route
-                    component={ele.component}
-                    key={ele.path}
-                    path={ele.path}
-                                                       />
+  render () {
+    const { handleFilter } = this;
+    return (
+      <TransitionGroup>
+        <CSSTransition
+            classNames="fade"
+            key={location.pathname}
+            timeout={500}
+        >
+          <Content style={{ margin: '12px 10px'}}>
+            <Switch>
+              {
+                routes.map(ele => {
+                  return handleFilter(ele.permission) && <Route
+                      component={ele.component}
+                      key={ele.path}
+                      path={ele.path}
+                      />
+                })
               }
-
-              )
-            }
-            <Redirect
-                from='/'
-                to='/error/404'
-            />
-
-          </Switch>
-        </Content>
-      </CSSTransition>
-    </TransitionGroup>
-  )
+              <Redirect
+                  from='/'
+                  to='/error/404'
+              />
+  
+            </Switch>
+          </Content>
+        </CSSTransition>
+      </TransitionGroup>
+    )
+  }
 }
 
 const mapStateToProps = state => ({userInfo: state.user.userInfo})

@@ -7,7 +7,7 @@ const Error404 = props=>{
 
   const goback = ()=>{
     const {history} = props
-    history.push('/dashboard')
+    history.push('/login')
   }
   return (
     <Row

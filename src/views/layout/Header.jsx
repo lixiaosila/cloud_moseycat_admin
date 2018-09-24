@@ -14,7 +14,6 @@ const LayoutHeader = props => {
   const {collapsed, changeCollapseds, isMobile, deleteToken} = props
   // 获取用户信息，如果state树没有数据，则读取缓存
   let userInfo = props.userInfo;
-  userInfo.header =  "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2863156404,3882435418&fm=27&gp=0.jpg"
 
   const handleLogout =() => {
     deleteToken()

@@ -8,7 +8,7 @@ message.config({
 });
 
 const api = axios.create({
-  baseURL: "",
+  baseURL: "http://moseycat.com:8081",
   timeout: 5000,
   withCredentials: true // 允许携带cookie
 })

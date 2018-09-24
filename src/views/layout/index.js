@@ -41,8 +41,9 @@ class LayoutComponent extends Component {
   }
   render () {
     const {collapsed,isMobile} = this.props
-    let marginLeft = collapsed?80:250
-    isMobile && (marginLeft=0)
+    let marginLeft = collapsed ? 80 : 250;
+    isMobile && (marginLeft=0);
+
     return (
       <Layout>
         <Sider />
