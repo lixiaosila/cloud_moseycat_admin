@@ -85,9 +85,12 @@ class TableEdit extends Component {
   componentDidMount() {
     this.getList();
   }
-  getList(page = 1) {
+  getList(page = 1, keyword) {
     let params = {
       page: page
+    }
+    if(keyword) {
+      params = keyword;
     }
     this.setState(
       {
@@ -177,9 +180,20 @@ class TableEdit extends Component {
     )
     this.getList(currentPage)
   }
+  handleSearch = (value) => {
+    console.log('12', value)
+    if(!value) {
+      return;
+    }
+    let params = {
+      keyword: value.trim()
+    }
+    this.getList(1, params);
+  }
+
   render() {
     let { editable, columns, data, currentData, pagination, loading} = this.state;
-    let { handleConfirm, handleCancel, handlePage } = this;
+    let { handleConfirm, handleCancel, handlePage, handleSearch } = this;
     let pageConfig = Object.assign({}, pagination, {
       onChange: handlePage
     })
@@ -188,7 +202,7 @@ class TableEdit extends Component {
           <div style={{ textAlign: "right" }}>
             <Search
               placeholder="请输入姓名或手机号"
-              onSearch={value => console.log(value)}
+              onSearch={handleSearch}
               enterButton
               style={{ width: 200, marginBottom: '20px' }}
             />
