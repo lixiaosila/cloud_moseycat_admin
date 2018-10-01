@@ -163,7 +163,7 @@ class ManagerToggle extends Component {
     return (
       <div className='shadow-radius'>
           <Button type="primary" className="add_manage" onClick={handleAdd}>
-            新增定制师
+            新增旅游景点
           </Button>
           <Table
               bordered

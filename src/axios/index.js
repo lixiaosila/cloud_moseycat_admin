@@ -20,8 +20,6 @@ api
   .use(function (config) {
     // 在发送请求之前做些什么
     // 通过reudx的store拿到拿到全局状态树的token ，添加到请求报文，后台会根据该报文返回status
-    const token = store.getState().user.token || localStorage.getItem('token')
-    config.headers['X-Token'] = token
     if (config.method === 'post') {
       config.data = qs.stringify(config.data);
      }
@@ -43,19 +41,26 @@ api
     // 对响应数据做点什么
     if (response.data.code != 1) { 
       message.error(response.data.msg);
+      console.log('error.response', response.data)
+
+      if(response.data.code == -3) {
+        window.location.href = '#/login'
+      }
     }
+
     return response
 
   }, function (error) {
     // 对响应错误做点什么
+      console.log('error.response', error.response)
+
     if (error.response) {
-      
+      console.log('error.response', error.response)
       if (error.response.status === 401) {
         // 如果返回401 即没有权限，跳到登录页重新登录
          message.error(error.response.data.msg)
 
          window.location.href = '#/login'
-
       }
     }
 

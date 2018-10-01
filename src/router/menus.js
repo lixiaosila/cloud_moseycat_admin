@@ -7,9 +7,17 @@ export const menus = [
     ],
   },
   {
-    path: '/update', title: '信息更新', icon: 'scan',
+    path: '/update', title: '定制师管理', icon: 'team',
     children: [
       { path: '/update/guider', title: '定制师列表' },
+      { path: '/update/custom/:id', title: '定制师编辑' },
+    ],
+  },
+  {
+    path: '/scene', title: '景点管理', icon: 'scan',
+    children: [
+      { path: '/scene/list', title: '景点列表' },
+      { path: '/scene/custom/:id', title: '景点编辑' },
     ],
   },
   {
