@@ -6,11 +6,9 @@ import AddForm from './addForm';
 class ManagerToggle extends Component {
   state = {
     data: [],
-    editable: false,
     addable: false,
     currentPage: 1,
     totalPage: 1,
-    currentData: {},
     pagination: {
       total: 1,
       current: 1,
@@ -20,18 +18,20 @@ class ManagerToggle extends Component {
       {
         title: '姓名',
         dataIndex: 'name',
-      }, {
-        title: '手机号',
-        dataIndex: 'mobile',
-      }, {
-        title: '角色',
-        dataIndex: 'email',
-        render: (text,row,index) => {
-          return (
-            row.role == 'super' ? <span>超级管理员</span> : <span>管理员</span>
-          )
-        }
-      },{
+      }, 
+      {
+        title: '头像',
+        dataIndex: 'img',
+      }, 
+      {
+        title: '宣传语',
+        dataIndex: 'slogan',
+      },
+      {
+        title: '专属',
+        dataIndex: 'expert',
+      },
+      {
         title:'操作',
         dataIndex: 'control',
         width: '22%',
@@ -40,7 +40,7 @@ class ManagerToggle extends Component {
               <div>
                 <Button
                     ghost
-                    onClick={this.setEditable.bind(this, row, text)}
+                    onClick={this.handleEdit.bind(this, row)}
                     style={{marginRight:12}}
                     type='primary'
                 >编辑</Button>
@@ -87,13 +87,8 @@ class ManagerToggle extends Component {
     })
   }
   
-  setEditable(row){
-    this.setState(
-      {
-        editable: true,
-        currentData: row
-      }
-    )
+  handleEdit(row){
+    this.props.history.push(`/update/custom/${row.id}`);
   }
 
   deleteRow(values) {
@@ -101,19 +96,6 @@ class ManagerToggle extends Component {
       message.success("删除成功")
       this.getList();
     })
-  }
-  
-  handleEditConfirm = (values) =>{
-    let { currentData } = this.state;
-    let params = Object.assign({}, currentData, values);
-
-    putAdmin(params).then(
-      res => {
-        this.getList();
-        message.success("更新成功");
-      }
-    )
-    this.handleCancel();
   }
 
   handleAddConfirm = (values) =>{
@@ -131,7 +113,6 @@ class ManagerToggle extends Component {
   handleCancel = () => {
     this.setState(
       {
-        editable: false,
         addable: false
       }
     )
@@ -155,8 +136,8 @@ class ManagerToggle extends Component {
   }
 
   render() {
-    let { editable, addable, columns, data, currentData, loading, pagination} = this.state;
-    let { handleEditConfirm, handleAddConfirm, handleCancel, handleAdd, handlePage } = this;
+    let { addable, columns, data, loading, pagination} = this.state;
+    let { handleAddConfirm, handleCancel, handleAdd, handlePage } = this;
     let pageConfig = Object.assign({},pagination, {
       onChange: handlePage
     })

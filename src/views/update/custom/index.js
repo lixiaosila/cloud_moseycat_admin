@@ -1,23 +1,27 @@
-import React,{Component} from 'react'
-import E from 'wangeditor'
-
-class Custom extends Component {
+import React, {Component} from 'react';
+import { Form, Button, Upload, Icon, Rate, Input } from 'antd';
+import E from 'wangeditor';
+  
+const FormItem = Form.Item;
+  
+class EditForm extends Component {
     state = {
         data: [],
         editor: '',
-        editorContent: "<div>12<img src='https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=1903728600,852547729&fm=173&app=25&f=JPEG?w=218&h=146&s=BA8224C1184306574CFC6197030050C2' />34</div>"
+        editorContent: ''
     }
     componentDidMount() {
         this.getEditConfig();
     }
-    getEditConfig() {
+    getEditConfig() {    
         const elem = this.refs.editorElem;
-        this.editor = new E(elem)
+        this.editor = new E(elem);
         // 使用 onchange 函数监听内容的变化，并实时更新到 state 中
         this.editor.customConfig.onchange = html => {
-          this.setState({
-            editorContent: html
-          })
+            console.log('html', html);
+            this.setState({
+                editorContent: html
+            })
         };
         this.editor.customConfig.menus = [
             'head',  // 标题
@@ -39,21 +43,81 @@ class Custom extends Component {
         ];
         this.editor.customConfig.uploadImgServer = '/upload';
         this.editor.create();
-        setTimeout(() => {
-            this.editor.txt.html(this.state.editorContent);  
-        }, 2000);
     }
-    clickHandle = () => {
-        console.log(this.state.editorContent)
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                console.log('Received values of form: ', this.state.editorContent);
+            }
+        });
     }
+    normFile = (e) => {
+        console.log('Upload event:', e);
+        if (Array.isArray(e)) {
+        return e;
+        }
+        return e && e.fileList;
+    }
+
     render() {
+        const { getFieldDecorator } = this.props.form;
+        const formItemLayout = {
+            labelCol: { span: 4},
+            wrapperCol: { span: 14 },
+        };
         return (
-            <div>
-                <div ref="editorElem" style={{textAlign: 'left'}}></div>
-                <div onClick={this.clickHandle}>确定</div>
-            </div>
+            <Form onSubmit={this.handleSubmit}>
+                <FormItem
+                    {...formItemLayout}
+                    label="姓名"
+                >
+                <Input placeholder="请输入姓名" style={{ width: '60%' }} />
+            </FormItem>
+            <FormItem
+                {...formItemLayout}
+                    label="头像"
+                >
+                {getFieldDecorator('upload', {
+                    valuePropName: 'fileList',
+                    getValueFromEvent: this.normFile,
+                })(
+                    <Upload name="logo" action="/upload.do" listType="picture" >
+                        <Button>
+                            <Icon type="upload" /> Click to upload
+                        </Button>
+                    </Upload>
+                )}
+            </FormItem>
+            <FormItem
+                {...formItemLayout}
+                    label="宣传语"
+                >
+                <Button type="dashed" onClick={this.add} style={{ width: '60%' }}>
+                    <Icon type="plus" /> Add field
+                </Button>
+            </FormItem>
+            <FormItem
+                {...formItemLayout}
+                    label="专业领域"
+                >
+                <Button type="dashed" onClick={this.add} style={{ width: '60%' }}>
+                    <Icon type="plus" /> Add field
+                </Button>
+            </FormItem>
+             
+            <FormItem>
+                <div ref="editorElem" style={{textAlign: 'left',  margin: '20px'}}></div> 
+            </FormItem>
+            <FormItem
+                wrapperCol={{ span: 12, offset: 6 }}
+            >
+                <Button type="primary" htmlType="submit">Submit</Button>
+            </FormItem>
+        </Form>
         );
     }
 }
-
-export default Custom;
+  
+const WrappedForm = Form.create()(EditForm);
+export default WrappedForm;

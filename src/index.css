@@ -159,3 +159,6 @@ canvas {
 .add_manage {
     margin: 10px 0 12px;
 }
+.custom_basic {
+    overflow: hidden;
+}
