@@ -1,14 +1,11 @@
 import React,{Component} from 'react'
-import { Table ,Button, Input, message, Popconfirm} from 'antd'
-import { addAdmin, deleteAdmin, putAdmin, getAdmin } from '@/server'
-import AddForm from './addForm';
+import { Table ,Button, message, Popconfirm, Tag} from 'antd'
+import { getGuiders, deleteGuider } from '@/server'
 
-class ManagerToggle extends Component {
+class GuiderLists extends Component {
   state = {
     data: [],
-    addable: false,
     currentPage: 1,
-    totalPage: 1,
     pagination: {
       total: 1,
       current: 1,
@@ -21,15 +18,36 @@ class ManagerToggle extends Component {
       }, 
       {
         title: '头像',
-        dataIndex: 'img',
+        dataIndex: 'photo',
+        render: (text) => {
+          return <img src={text} />
+        }
       }, 
       {
         title: '宣传语',
-        dataIndex: 'slogan',
+        dataIndex: 'title',
+        render: (text) => {
+          return text.map(
+            (item, index) => {
+                return (
+                  <Tag color="#2db7f5" key={index}>{text[index]}</Tag> 
+                )                 
+            }
+          )
+        }
       },
       {
         title: '专属',
-        dataIndex: 'expert',
+        dataIndex: 'filed',
+        render: (text) => {
+          return text.map(
+            (item, index) => {
+                return (
+                  <Tag color="#108ee9" key={index}>{text[index]}</Tag> 
+                )                 
+            }
+          )
+        }
       },
       {
         title:'操作',
@@ -72,7 +90,7 @@ class ManagerToggle extends Component {
         loading: true
       }
     )
-    getAdmin(params).then(res => {
+    getGuiders(params).then(res => {
       this.setState(
         {
           data: res.data.list,
@@ -86,46 +104,15 @@ class ManagerToggle extends Component {
       )
     })
   }
-  
   handleEdit(row){
     this.props.history.push(`/update/custom/${row.id}`);
   }
-
   deleteRow(values) {
-    deleteAdmin(values).then(res => {
+    deleteGuider(values).then(res => {
       message.success("删除成功")
       this.getList();
     })
   }
-
-  handleAddConfirm = (values) =>{
-    let params = Object.assign({}, values);
-
-    addAdmin(params).then(
-      res => {
-        this.getList();
-        message.success("新增管理员成功");
-      }
-    )
-    this.handleCancel();
-  }
-
-  handleCancel = () => {
-    this.setState(
-      {
-        addable: false
-      }
-    )
-  }
-
-  handleAdd = () => {
-    this.setState(
-      {
-        addable: true
-      }
-    )
-  }
-
   handlePage = (currentPage) => {
     this.setState(
       {
@@ -136,16 +123,13 @@ class ManagerToggle extends Component {
   }
 
   render() {
-    let { addable, columns, data, loading, pagination} = this.state;
-    let { handleAddConfirm, handleCancel, handleAdd, handlePage } = this;
+    let { columns, data, loading, pagination} = this.state;
+    let { handlePage } = this;
     let pageConfig = Object.assign({},pagination, {
       onChange: handlePage
     })
     return (
       <div className='shadow-radius'>
-          <Button type="primary" className="add_manage" onClick={handleAdd}>
-            新增定制师
-          </Button>
           <Table
               bordered
               columns={columns}
@@ -154,10 +138,9 @@ class ManagerToggle extends Component {
               rowKey={row => row.id}
               loading={loading}
           />
-          <AddForm visible={addable} onConfirm={handleAddConfirm} onCancel={handleCancel} />
       </div>
     )
   }
 }
 
-export default ManagerToggle
+export default GuiderLists

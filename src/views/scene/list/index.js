@@ -1,16 +1,11 @@
 import React,{Component} from 'react'
-import { Table ,Button, Input, message, Popconfirm} from 'antd'
-import { addAdmin, deleteAdmin, putAdmin, getAdmin } from '@/server'
-import AddForm from './addForm';
+import { Table ,Button, message, Popconfirm, Tag} from 'antd'
+import { getScenes, deleteScene } from '@/server'
 
-class ManagerToggle extends Component {
+class GuiderLists extends Component {
   state = {
     data: [],
-    editable: false,
-    addable: false,
     currentPage: 1,
-    totalPage: 1,
-    currentData: {},
     pagination: {
       total: 1,
       current: 1,
@@ -18,20 +13,21 @@ class ManagerToggle extends Component {
     },
     columns : [
       {
-        title: '姓名',
-        dataIndex: 'name',
-      }, {
-        title: '手机号',
-        dataIndex: 'mobile',
-      }, {
-        title: '角色',
-        dataIndex: 'email',
-        render: (text,row,index) => {
-          return (
-            row.role == 'super' ? <span>超级管理员</span> : <span>管理员</span>
-          )
+        title: '景点',
+        dataIndex: 'title',
+      }, 
+      {
+        title: 'banner',
+        dataIndex: 'cover',
+        render: (text) => {
+          return <img src={text} />
         }
-      },{
+      },
+      {
+        title: '价格',
+        dataIndex: 'price',
+      },
+      {
         title:'操作',
         dataIndex: 'control',
         width: '22%',
@@ -40,7 +36,7 @@ class ManagerToggle extends Component {
               <div>
                 <Button
                     ghost
-                    onClick={this.setEditable.bind(this, row, text)}
+                    onClick={this.handleEdit.bind(this, row)}
                     style={{marginRight:12}}
                     type='primary'
                 >编辑</Button>
@@ -72,7 +68,7 @@ class ManagerToggle extends Component {
         loading: true
       }
     )
-    getAdmin(params).then(res => {
+    getScenes(params).then(res => {
       this.setState(
         {
           data: res.data.list,
@@ -86,65 +82,15 @@ class ManagerToggle extends Component {
       )
     })
   }
-  
-  setEditable(row){
-    this.setState(
-      {
-        editable: true,
-        currentData: row
-      }
-    )
+  handleEdit(row){
+    this.props.history.push(`/scene/custom/${row.id}`);
   }
-
   deleteRow(values) {
-    deleteAdmin(values).then(res => {
+    deleteScene(values).then(res => {
       message.success("删除成功")
       this.getList();
     })
   }
-  
-  handleEditConfirm = (values) =>{
-    let { currentData } = this.state;
-    let params = Object.assign({}, currentData, values);
-
-    putAdmin(params).then(
-      res => {
-        this.getList();
-        message.success("更新成功");
-      }
-    )
-    this.handleCancel();
-  }
-
-  handleAddConfirm = (values) =>{
-    let params = Object.assign({}, values);
-
-    addAdmin(params).then(
-      res => {
-        this.getList();
-        message.success("新增管理员成功");
-      }
-    )
-    this.handleCancel();
-  }
-
-  handleCancel = () => {
-    this.setState(
-      {
-        editable: false,
-        addable: false
-      }
-    )
-  }
-
-  handleAdd = () => {
-    this.setState(
-      {
-        addable: true
-      }
-    )
-  }
-
   handlePage = (currentPage) => {
     this.setState(
       {
@@ -155,16 +101,13 @@ class ManagerToggle extends Component {
   }
 
   render() {
-    let { editable, addable, columns, data, currentData, loading, pagination} = this.state;
-    let { handleEditConfirm, handleAddConfirm, handleCancel, handleAdd, handlePage } = this;
+    let { columns, data, loading, pagination} = this.state;
+    let { handlePage } = this;
     let pageConfig = Object.assign({},pagination, {
       onChange: handlePage
     })
     return (
       <div className='shadow-radius'>
-          <Button type="primary" className="add_manage" onClick={handleAdd}>
-            新增旅游景点
-          </Button>
           <Table
               bordered
               columns={columns}
@@ -173,10 +116,9 @@ class ManagerToggle extends Component {
               rowKey={row => row.id}
               loading={loading}
           />
-          <AddForm visible={addable} onConfirm={handleAddConfirm} onCancel={handleCancel} />
       </div>
     )
   }
 }
 
-export default ManagerToggle
+export default GuiderLists

@@ -181,10 +181,10 @@ class TableEdit extends Component {
     this.getList(currentPage)
   }
   handleSearch = (value) => {
-    console.log('12', value)
-    if(!value) {
-      return;
-    }
+    // console.log('12', value)
+    // if(!value) {
+    //   return;
+    // }
     let params = {
       keyword: value.trim()
     }

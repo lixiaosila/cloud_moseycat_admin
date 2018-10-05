@@ -16,6 +16,16 @@ import {
     getCharts,
 } from './charts'
 
+import {  
+    getGuiders,
+    deleteGuider
+} from './guider'
+
+import {
+    getScenes,
+    deleteScene
+} from './scene'
+
 export {
     getTravels,
     putTravels,
@@ -25,5 +35,9 @@ export {
     putAdmin,
     getAdmin,
     getUser,
-    getCharts
+    getCharts,
+    getGuiders,
+    deleteGuider,
+    getScenes,
+    deleteScene
 }
