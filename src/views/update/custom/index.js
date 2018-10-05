@@ -10,7 +10,8 @@ class EditForm extends Component {
         data: [],
         photo: [],
         editor: '',
-        content: ''
+        content: '',
+        fileList: []
     }
     componentDidMount() {
         if(this.props.match.params.id != ':id') {
@@ -123,12 +124,10 @@ class EditForm extends Component {
                 }
             )
         }
+        this.setState({ fileList: fileList });
     }
-    normFile = (e) => {
-        if (Array.isArray(e)) {
-            return e;
-        }
-        return e && e.fileList;
+    beforeUpload = (file) => {
+
     }
     getTitles = (titles, getFieldDecorator) => {
         return titles.map((item, index) => {
@@ -240,7 +239,7 @@ class EditForm extends Component {
     }
 
     render() {
-        let { data } = this.state;
+        let { data, fileList } = this.state;
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 4},
@@ -256,7 +255,9 @@ class EditForm extends Component {
             onChange: this.handleUpload,
             listType: "picture",
             multiple: false,
-            withCredentials: true
+            withCredentials: true,
+            beforeUpload: this.beforeUpload,
+            fileList: fileList
         };
         
         return (
@@ -281,8 +282,6 @@ class EditForm extends Component {
                         this.getDefaultPhoto(data)
                     }
                     {getFieldDecorator('photo', {
-                        valuePropName: 'filelist',
-                        getValueFromEvent: this.normFile,
                         rules: [{ required: false, message: '请上传头像!' }],
                     })(
                         <div style={{ width: '60%' }}>
