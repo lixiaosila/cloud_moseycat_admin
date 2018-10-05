@@ -162,3 +162,9 @@ canvas {
 .custom_basic {
     overflow: hidden;
 }
+.fields_wrap {
+    display: flex;
+}
+.fields_wrap input {
+    flex: 1
+}

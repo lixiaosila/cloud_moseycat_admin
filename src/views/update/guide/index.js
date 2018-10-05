@@ -20,7 +20,7 @@ class GuiderLists extends Component {
         title: '头像',
         dataIndex: 'photo',
         render: (text) => {
-          return <img src={text} />
+          return <img src={text} style={{maxWidth: '100px'}} />
         }
       }, 
       {
@@ -43,7 +43,7 @@ class GuiderLists extends Component {
           return text.map(
             (item, index) => {
                 return (
-                  <Tag color="#108ee9" key={index}>{text[index]}</Tag> 
+                  <Tag color="#108ee9" key={index}>{text[index].title}：{text[index].content}</Tag> 
                 )                 
             }
           )

@@ -18,12 +18,18 @@ import {
 
 import {  
     getGuiders,
-    deleteGuider
+    deleteGuider,
+    getGuider,
+    addGuider,
+    putGuider
 } from './guider'
 
 import {
     getScenes,
-    deleteScene
+    deleteScene,
+    getScene,
+    addScene,
+    putDetail
 } from './scene'
 
 export {
@@ -38,6 +44,12 @@ export {
     getCharts,
     getGuiders,
     deleteGuider,
+    getGuider,
+    addGuider,
+    putGuider,
     getScenes,
-    deleteScene
+    deleteScene,
+    getScene,
+    addScene,
+    putDetail
 }
