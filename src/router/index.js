@@ -5,13 +5,15 @@ import TableEdit from '@/views/info/order'
 import ChartShow from '@/views/info/chart'
 import Guider from '@/views/update/guide'
 import UpdataCustom from '@/views/update/custom'
+import GuiderBanner from '@/views/update/banner'
 import List from '@/views/scene/list'
-import SceneCustom from '@/views/update/custom'
+import SceneCustom from '@/views/scene/custom'
 
 export const routes = [
   { path: '/permission/manage', component: PermissionToggle},
   { path: '/info/order', component: TableEdit },
   { path: '/info/chart', component: ChartShow },
+  { path: '/update/banner', component: GuiderBanner },
   { path: '/update/guider', component: Guider },
   { path: '/update/custom/:id', component: UpdataCustom },
   { path: '/scene/list', component: List },

@@ -29,6 +29,11 @@ class App extends Component {
                     values.cover = this.state.cover;
                 }
                 this.props.onConfirm(values);
+                this.setState(
+                    {
+                        fileList: []
+                    }
+                )
                 this.props.form.resetFields();
                 this.props.onCancel();
             }
@@ -36,6 +41,11 @@ class App extends Component {
     }
     handleCancel = (e) => {
         e.preventDefault();
+        this.setState(
+            {
+                fileList: []
+            }
+        )
         this.props.form.resetFields();
         this.props.onCancel();
     }
@@ -68,8 +78,8 @@ class App extends Component {
     }
     beforeUpload = (file) => {
         let { initPhoto } = this.props;
-        console.log('file', file)
-        if(!!initPhoto && this.state.cover) {
+        console.log('file', file, !!initPhoto )
+        if(!!initPhoto || this.state.cover) {
             message.error('banner只能有一个');
             return false
         }
@@ -126,15 +136,32 @@ class App extends Component {
             subTitle: nextTitles,
         });
     }
+    getDefaultPhoto = (current) => {
+        let { cover } = current;
+        return(
+            <div className="upload_img_wrap" style={{width: '100%'}}>
+                <img src={cover} className="photo"/>
+                <i title="删除文件" className="close" onClick={this.handlePicClose}>
+                    <svg viewBox="64 64 896 896" className="" data-icon="close" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"></path></svg>
+                </i>
+            </div>
+        )
+    }
+    handlePicClose = () => {
+        this.props.handlePicClose();
+    }
 
     render() {
+        console.log('current', this.props.current);
+
         let { visible } = this.props;
         let { fileList } = this.state;
+        let { current } = this.props;
         let { handleSubmit, handleCancel } = this;
         const { getFieldDecorator, getFieldValue } = this.props.form;
-        getFieldDecorator('subTitle', { initialValue: [] });
+        getFieldDecorator('subTitle', { initialValue: current.subTitle || [] });
         let titles = getFieldValue('subTitle') || [];
-        console.log('titles', titles) ;
+        console.log('titles', fileList) ;
 
         const props = {
             action: 'http://moseycat.com:8081/admin/images',
@@ -160,6 +187,7 @@ class App extends Component {
                         wrapperCol={{ span: 15 }}
                     >
                     {getFieldDecorator('title', {
+                        initialValue: current.title || '',
                         rules: [{ required: true, message: '请输入标题' }],
                     })(
                         <Input />
@@ -170,6 +198,7 @@ class App extends Component {
                         labelCol={{ span: 7 }}
                         wrapperCol={{ span: 15 }}
                     >
+                        {current.cover && this.getDefaultPhoto(current)}
                         <Upload name="image[]" {...props}>
                             <Button>
                                 <Icon type="upload" /> upload

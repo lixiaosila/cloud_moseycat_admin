@@ -40,7 +40,7 @@ const addScene = params  => {
         })
     })
 }
-const putDetail = params  => {
+const putScene = params  => {
     return new Promise(reslove => {
         api.put(`/admin/views/${params.id}`, params).then(res => {
             if (res.data.code == 1) {
@@ -55,5 +55,5 @@ export {
     deleteScene,
     getScene,
     addScene,
-    putDetail
+    putScene
 }

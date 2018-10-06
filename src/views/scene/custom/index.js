@@ -1,27 +1,72 @@
 import React, {Component} from 'react';
-import { Form, Button, Upload, Icon, Rate, Input } from 'antd';
+import { Form, Button, Upload, Icon, message, Input, Radio } from 'antd';
 import E from 'wangeditor';
-  
+import { getScene, addScene, putScene } from '@/server'
+
 const FormItem = Form.Item;
+const RadioGroup = Radio.Group;
   
 class EditForm extends Component {
     state = {
         data: [],
+        cover: [],
+        initPhoto: [],
         editor: '',
-        editorContent: ''
+        featureContent: '',
+        travelContent: '',
+        feeContent: '',
+        fileList: [],
+        currentIndex: 1
     }
     componentDidMount() {
+        if(this.props.match.params.id != ':id') {
+            this.getInfo(this.props.match.params.id);
+        }
         this.getEditConfig();
+    }
+    getInfo(id) {
+        let params = {
+            id
+        };
+        getScene(params).then(
+            res => {
+                this.setState(
+                    {
+                        data: res.data,
+                        initPhoto: [res.data.cover],
+                        cover: [res.data.cover],
+                        featureContent: res.data.featureContent,
+                        travelContent: res.data.travelContent,
+                        feeContent: res.data.feeContent,
+                    }
+                )
+                this.swicthContent(1);
+            }
+        )
     }
     getEditConfig() {    
         const elem = this.refs.editorElem;
         this.editor = new E(elem);
         // 使用 onchange 函数监听内容的变化，并实时更新到 state 中
         this.editor.customConfig.onchange = html => {
-            console.log('html', html);
-            this.setState({
-                editorContent: html
-            })
+            if(this.state.currentIndex == 1) {
+                this.setState({
+                    featureContent: html
+                })
+                return;
+            }
+            if(this.state.currentIndex == 2) {
+                this.setState({
+                    travelContent: html
+                })
+                return;
+            }
+            if(this.state.currentIndex == 3) {
+                this.setState({
+                    feeContent: html
+                })
+                return;
+            }
         };
         this.editor.customConfig.menus = [
             'head',  // 标题
@@ -41,79 +86,196 @@ class EditForm extends Component {
             'undo',  // 撤销
             'redo'  // 重复
         ];
-        this.editor.customConfig.uploadImgServer = '/upload';
+        this.editor.customConfig.uploadImgServer = 'http://moseycat.com:8081/admin/images';
         this.editor.create();
+    }
+    getDefaultPhoto = () => {
+        let { initPhoto, data } = this.state;
+        if(initPhoto.length > 0) {
+            return(
+                <div className="upload_img_wrap">
+                    <img src={data.cover} className="photo"/>
+                    <i title="删除文件" className="close" onClick={this.handlePicClose}>
+                        <svg viewBox="64 64 896 896" className="" data-icon="close" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"></path></svg>
+                    </i>
+                </div>
+            )
+        }
+        return '';
+    }
+    handlePicClose = () => {
+        this.setState({
+            initPhoto: []
+        })
     }
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', this.state.editorContent);
+                let { cover, featureContent, travelContent, feeContent } = this.state;
+                if(cover.length == 0) {
+                    message.error('请上传banner！');
+                    return;
+                }
+                let { history } = this.props;
+                let params = {
+                    "title": values.title,
+                    "subTitle": values.subTitle,
+                    "cover": cover[0],
+                    "price": values.price,
+                    "featureContent": featureContent,
+                    "travelContent": travelContent,
+                    "feeContent": feeContent
+                }
+                if(this.props.match.params.id != ':id') {
+                    params.id = this.props.match.params.id;
+                    putScene(params).then(
+                        res => {
+                            message.success("更新成功");
+                            setTimeout(() => {
+                                history.push('/scene/list')
+                            }, 2000);
+                        }
+                    )
+                } else {
+                    addScene(params).then(
+                        res => {
+                            message.success("创建成功");
+                            setTimeout(() => {
+                                history.push('/scene/list')
+                            }, 2000);
+                        }
+                    )
+                }
             }
         });
     }
-    normFile = (e) => {
-        console.log('Upload event:', e);
-        if (Array.isArray(e)) {
-        return e;
+    handleUpload = ({file, fileList}) => {
+        let { initPhoto } = this.state;
+        if(initPhoto.length > 0) {
+            return false;
         }
-        return e && e.fileList;
+        if (file.status !== 'uploading') {
+            console.log('file.response.data', file.response.data)
+            this.setState(
+                {
+                    cover: file.response.data
+                }
+            )
+        }
+        this.setState({ fileList: fileList });
+    }
+    beforeUpload = (file) => {
+        let { initPhoto } = this.state;
+        if(initPhoto.length > 0) {
+            message.error('头像只能有一个');
+            return false
+        }
+    }
+    handleSwitch = (item) => {
+        this.setState(
+            {
+                currentIndex: item.target.value
+            }
+        )
+        this.swicthContent(item.target.value);
+    }
+    swicthContent = (value) => {
+        if(value == 1) {
+            this.editor.txt.html(this.state.featureContent);
+        }
+        if(value == 2) {
+            this.editor.txt.html(this.state.travelContent);
+        }
+        if(value == 3) {
+            this.editor.txt.html(this.state.feeContent);
+        }
     }
 
     render() {
+        let { data, fileList } = this.state;
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
-            labelCol: { span: 6 },
+            labelCol: { span: 4},
             wrapperCol: { span: 14 },
         };
+        
+        const props = {
+            action: 'http://moseycat.com:8081/admin/images',
+            onChange: this.handleUpload,
+            listType: "picture",
+            multiple: false,
+            withCredentials: true,
+            beforeUpload: this.beforeUpload,
+            fileList: fileList
+        };
+        
         return (
             <Form onSubmit={this.handleSubmit}>
                 <FormItem
                     {...formItemLayout}
-                    label="姓名"
+                    label="旅游景点"
                 >
-                <Input placeholder="请输入姓名" style={{ width: '60%' }} />
-            </FormItem>
-            <FormItem
-                {...formItemLayout}
-                    label="Upload"
+                    {getFieldDecorator('title', {
+                        initialValue: data.title || '',
+                        rules: [{ required: true, message: '请输入旅游景点' }],
+                    })(
+                    
+                        <Input placeholder="请输入旅游景点" style={{ width: '60%' }} />
+                    )}
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
+                    label="旅游简介"
                 >
-                {getFieldDecorator('upload', {
-                    valuePropName: 'fileList',
-                    getValueFromEvent: this.normFile,
-                })(
-                    <Upload name="logo" action="/upload.do" listType="picture" >
-                        <Button>
-                            <Icon type="upload" /> Click to upload
-                        </Button>
-                    </Upload>
-                )}
-            </FormItem>
-            <FormItem
-                {...formItemLayout}
-                    label="宣传语"
+                    {getFieldDecorator('subTitle', {
+                        initialValue: data.subTitle || '',
+                        rules: [{ required: true, message: '请输入旅游简介' }],
+                    })(
+                    
+                        <Input placeholder="请输入旅游简介" style={{ width: '60%' }} />
+                    )}
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
+                    label="旅游价格"
                 >
-                <Button type="dashed" onClick={this.add} style={{ width: '60%' }}>
-                    <Icon type="plus" /> Add field
-                </Button>
-            </FormItem>
-            <FormItem
-                {...formItemLayout}
-                    label="专业领域"
+                    {getFieldDecorator('price', {
+                        initialValue: data.price || '',
+                        rules: [{ required: true, message: '请输入旅游价格' }],
+                    })(
+                    
+                        <Input placeholder="请输入旅游价格" style={{ width: '60%' }} />
+                    )}
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
+                        label="banner"
+                    >
+                    {
+                        this.getDefaultPhoto(data)
+                    }
+                    <div style={{ width: '60%' }}>
+                        <Upload name="image[]" {...props} >
+                            <Button>
+                                <Icon type="upload" /> Click to upload
+                            </Button>
+                        </Upload>
+                    </div>
+                </FormItem>
+                <FormItem>
+                    <RadioGroup name="radiogroup" onChange={this.handleSwitch} defaultValue={1} style={{textAlign: 'left',  margin: '20px'}}>
+                        <Radio value={1}>行程亮点</Radio>
+                        <Radio value={2}>行程安排</Radio>
+                        <Radio value={3}>费用包括</Radio>
+                    </RadioGroup>
+                    <div ref="editorElem" style={{textAlign: 'left',  margin: '20px'}}></div> 
+                </FormItem>
+                <FormItem
+                    wrapperCol={{ span: 12, offset: 6 }}
                 >
-                <Button type="dashed" onClick={this.add} style={{ width: '60%' }}>
-                    <Icon type="plus" /> Add field
-                </Button>
-            </FormItem>
-             
-            <FormItem>
-                <div ref="editorElem" style={{textAlign: 'left', margin: '20px'}}></div> 
-            </FormItem>
-            <FormItem
-                wrapperCol={{ span: 12, offset: 6 }}
-            >
-                <Button type="primary" htmlType="submit">Submit</Button>
-            </FormItem>
+                    <Button type="primary" htmlType="submit">Submit</Button>
+                </FormItem>
         </Form>
         );
     }

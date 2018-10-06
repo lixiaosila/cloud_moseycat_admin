@@ -9,6 +9,7 @@ class EditForm extends Component {
     state = {
         data: [],
         photo: [],
+        initPhoto: [],
         editor: '',
         content: '',
         fileList: []
@@ -28,7 +29,7 @@ class EditForm extends Component {
                 this.setState(
                     {
                         data: res.data,
-                        photo: [res.data.photo],
+                        initPhoto: [res.data.photo],
                         content: res.data.content
                     }
                 )
@@ -41,7 +42,6 @@ class EditForm extends Component {
         this.editor = new E(elem);
         // 使用 onchange 函数监听内容的变化，并实时更新到 state 中
         this.editor.customConfig.onchange = html => {
-            console.log('html', html)
             this.setState({
                 content: html
             })
@@ -68,12 +68,11 @@ class EditForm extends Component {
         this.editor.create();
     }
     getDefaultPhoto = () => {
-        let { photo, data } = this.state;
-        if(photo.length > 0) {
+        let { initPhoto, data } = this.state;
+        if(initPhoto.length > 0) {
             return(
                 <div className="upload_img_wrap">
                     <img src={data.photo} className="photo"/>
-                    <span>yyy.png</span>
                     <i title="删除文件" className="close" onClick={this.handlePicClose}>
                         <svg viewBox="64 64 896 896" className="" data-icon="close" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"></path></svg>
                     </i>
@@ -82,9 +81,9 @@ class EditForm extends Component {
         }
         return '';
     }
-    handlePicClose = (e) => {
+    handlePicClose = () => {
         this.setState({
-            photo: []
+            initPhoto: []
         })
     }
     handleSubmit = (e) => {
@@ -92,6 +91,11 @@ class EditForm extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 let { photo, content } = this.state;
+                if(photo.length == 0) {
+                    message.error('请上传头像！');
+                    return;
+                }
+                let { history } = this.props;
                 let params = {
                     "name": values.name,
                     "photo": photo[0],
@@ -104,12 +108,18 @@ class EditForm extends Component {
                     putGuider(params).then(
                         res => {
                             message.success("更新成功");
+                            setTimeout(() => {
+                                history.push('/update/guider')
+                            }, 2000);
                         }
                     )
                 } else {
                     addGuider(params).then(
                         res => {
                             message.success("创建成功");
+                            setTimeout(() => {
+                                history.push('/update/guider')
+                            }, 2000);
                         }
                     )
                 }
@@ -117,7 +127,12 @@ class EditForm extends Component {
         });
     }
     handleUpload = ({file, fileList}) => {
+        let { initPhoto } = this.state;
+        if(initPhoto.length > 0) {
+            return false;
+        }
         if (file.status !== 'uploading') {
+            console.log('file.response.data', file.response.data)
             this.setState(
                 {
                     photo: file.response.data
@@ -127,9 +142,13 @@ class EditForm extends Component {
         this.setState({ fileList: fileList });
     }
     beforeUpload = (file) => {
-
+        let { initPhoto } = this.state;
+        if(initPhoto.length > 0) {
+            message.error('头像只能有一个');
+            return false
+        }
     }
-    getTitles = (titles, getFieldDecorator) => {
+    getTitles = (titles) => {
         return titles.map((item, index) => {
             return  <FormItem
                         required={false}
@@ -141,14 +160,14 @@ class EditForm extends Component {
                             <Icon
                                 className="dynamic-delete-button"
                                 type="minus-circle-o"
-                                onClick={() => this.removeTitle(item)}
+                                onClick={() => this.removeTitle(index)}
                             />
                             ) : null
                         }
                     </FormItem>
         })
     }
-    getFields = (titles, getFieldDecorator) => {
+    getFields = (titles) => {
         return titles.map((item, index) => {
             return  <FormItem
                         required={false}
@@ -190,13 +209,17 @@ class EditForm extends Component {
             title: titles,
         });
     }
-    removeTitle = (item) => {
+    removeTitle = (index) => {
         const { form } = this.props;
         const basic_titles = form.getFieldValue('title');
         if (basic_titles.length === 0) {
             return;
         }
-        let nextTitles = basic_titles.filter(key => key !== item);
+        let nextTitles = basic_titles.filter(
+            (key, s_index) => {
+                return s_index !== index;
+            }
+        );
         form.setFieldsValue({
             title: nextTitles,
         });
@@ -246,7 +269,7 @@ class EditForm extends Component {
             wrapperCol: { span: 14 },
         };
         getFieldDecorator('title', { initialValue: data.title || [] });
-        getFieldDecorator('field', { initialValue: data.filed || [] });
+        getFieldDecorator('field', { initialValue: data.field || [] });
         let titles = getFieldValue('title') || [];
         let fields = getFieldValue('field') || [];
         
@@ -266,13 +289,13 @@ class EditForm extends Component {
                     {...formItemLayout}
                     label="定制师"
                 >
-                {getFieldDecorator('name', {
-                    initialValue: data.name || '',
-                    rules: [{ required: false, message: '请输入定制师昵称' }],
-                })(
-                  
-                    <Input placeholder="请输入姓名" style={{ width: '60%' }} />
-                )}
+                    {getFieldDecorator('name', {
+                        initialValue: data.name || '',
+                        rules: [{ required: true, message: '请输入定制师昵称' }],
+                    })(
+                    
+                        <Input placeholder="请输入定制师昵称" style={{ width: '60%' }} />
+                    )}
                 </FormItem>
                 <FormItem
                     {...formItemLayout}
@@ -281,25 +304,20 @@ class EditForm extends Component {
                     {
                         this.getDefaultPhoto(data)
                     }
-                    {getFieldDecorator('photo', {
-                        rules: [{ required: false, message: '请上传头像!' }],
-                    })(
-                        <div style={{ width: '60%' }}>
-                            <Upload name="image[]" {...props} >
-                                <Button>
-                                    <Icon type="upload" /> Click to upload
-                                </Button>
-                            </Upload>
-                        </div>
-                       
-                    )}
+                    <div style={{ width: '60%' }}>
+                        <Upload name="image[]" {...props} >
+                            <Button>
+                                <Icon type="upload" /> Click to upload
+                            </Button>
+                        </Upload>
+                    </div>
                 </FormItem>
                 <FormItem
                     {...formItemLayout}
                         label="宣传语"
                     >
                     <div>
-                        { titles.length > 0 && this.getTitles(titles, getFieldDecorator) }
+                        { titles.length > 0 && this.getTitles(titles) }
                         <Button type="dashed" onClick={this.addTitle} style={{ width: '60%' }}>
                             <Icon type="plus" /> Add field
                         </Button>
@@ -310,7 +328,7 @@ class EditForm extends Component {
                         label="专业领域"
                     >
                     <div>
-                        { fields.length > 0 && this.getFields(fields, getFieldDecorator) }
+                        { fields.length > 0 && this.getFields(fields) }
                         <Button type="dashed" onClick={this.addField} style={{ width: '60%' }}>
                             <Icon type="plus" /> Add field
                         </Button>

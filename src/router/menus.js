@@ -9,6 +9,7 @@ export const menus = [
   {
     path: '/update', title: '定制师管理', icon: 'team',
     children: [
+      { path: '/update/banner', title: '定制师banner' },
       { path: '/update/guider', title: '定制师列表' },
       { path: '/update/custom/:id', title: '定制师编辑' },
     ],

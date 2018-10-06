@@ -20,7 +20,7 @@ class GuiderLists extends Component {
         title: 'banner',
         dataIndex: 'cover',
         render: (text) => {
-          return <img src={text} />
+          return <img src={text} style={{maxWidth: '100px'}} />
         }
       },
       {

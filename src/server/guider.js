@@ -49,11 +49,33 @@ const putGuider = params  => {
         })
     })
 }
+const getBanner = params => {
+    return new Promise(reslove => {
+        api.get('/admin/designers/banner', {
+            params
+          }).then(res => {
+            if (res.data.code == 1) {
+                reslove(res.data)
+            }
+        })
+    })
+}
+const putBanner = params  => {
+    return new Promise(reslove => {
+        api.put('/admin/designers/banner', params).then(res => {
+            if (res.data.code == 1) {
+                reslove(res.data)
+            }   
+        })
+    })
+}
 
 export {
     getGuiders,
     deleteGuider,
     getGuider,
     addGuider,
-    putGuider
+    putGuider,
+    getBanner,
+    putBanner
 }

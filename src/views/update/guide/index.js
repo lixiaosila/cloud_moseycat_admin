@@ -38,7 +38,7 @@ class GuiderLists extends Component {
       },
       {
         title: '专属',
-        dataIndex: 'filed',
+        dataIndex: 'field',
         render: (text) => {
           return text.map(
             (item, index) => {
@@ -121,7 +121,7 @@ class GuiderLists extends Component {
     )
     this.getList(currentPage)
   }
-
+  
   render() {
     let { columns, data, loading, pagination} = this.state;
     let { handlePage } = this;

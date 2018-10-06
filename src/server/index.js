@@ -21,7 +21,9 @@ import {
     deleteGuider,
     getGuider,
     addGuider,
-    putGuider
+    putGuider,
+    getBanner,
+    putBanner
 } from './guider'
 
 import {
@@ -29,7 +31,7 @@ import {
     deleteScene,
     getScene,
     addScene,
-    putDetail
+    putScene
 } from './scene'
 
 export {
@@ -47,9 +49,11 @@ export {
     getGuider,
     addGuider,
     putGuider,
+    getBanner,
+    putBanner,
     getScenes,
     deleteScene,
     getScene,
     addScene,
-    putDetail
+    putScene
 }

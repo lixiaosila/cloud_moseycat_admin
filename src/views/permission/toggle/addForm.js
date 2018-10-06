@@ -33,7 +33,7 @@ class App extends Component {
         const { getFieldDecorator } = this.props.form;
         return (
             <Modal
-            title="Basic Modal"
+            title="新增管理员"
             visible={visible}
             onOk={handleSubmit}
             onCancel={handleCancel}
