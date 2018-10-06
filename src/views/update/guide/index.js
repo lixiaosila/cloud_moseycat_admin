@@ -24,6 +24,10 @@ class GuiderLists extends Component {
         }
       }, 
       {
+        title: '负责区域',
+        dataIndex: 'area',
+      },
+      {
         title: '宣传语',
         dataIndex: 'title',
         render: (text) => {
@@ -121,15 +125,21 @@ class GuiderLists extends Component {
     )
     this.getList(currentPage)
   }
-  
+  handleAdd = () => {
+    this.props.history.push('/update/custom/:id');
+  }
+
   render() {
     let { columns, data, loading, pagination} = this.state;
-    let { handlePage } = this;
+    let { handlePage, handleAdd} = this;
     let pageConfig = Object.assign({},pagination, {
       onChange: handlePage
     })
     return (
       <div className='shadow-radius'>
+          <Button type="primary" className="add_manage" onClick={handleAdd} style={{marginBottom: '20px'}}>
+            新增定制师
+          </Button>
           <Table
               bordered
               columns={columns}

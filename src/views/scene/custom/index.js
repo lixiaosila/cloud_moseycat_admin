@@ -16,7 +16,8 @@ class EditForm extends Component {
         travelContent: '',
         feeContent: '',
         fileList: [],
-        currentIndex: 1
+        currentIndex: 1,
+        isLogin: true
     }
     componentDidMount() {
         if(this.props.match.params.id != ':id') {
@@ -34,7 +35,6 @@ class EditForm extends Component {
                     {
                         data: res.data,
                         initPhoto: [res.data.cover],
-                        cover: [res.data.cover],
                         featureContent: res.data.featureContent,
                         travelContent: res.data.travelContent,
                         feeContent: res.data.feeContent,
@@ -104,6 +104,7 @@ class EditForm extends Component {
         return '';
     }
     handlePicClose = () => {
+        console.log('12')
         this.setState({
             initPhoto: []
         })
@@ -112,8 +113,12 @@ class EditForm extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                let { cover, featureContent, travelContent, feeContent } = this.state;
-                if(cover.length == 0) {
+                if(!this.state.isLogin) {
+                    message.error('请先登录');
+                    return;
+                }
+                let { cover, initPhoto, featureContent, travelContent, feeContent } = this.state;
+                if(cover.length == 0 &&  initPhoto.length == 0 ) {
                     message.error('请上传banner！');
                     return;
                 }
@@ -121,11 +126,16 @@ class EditForm extends Component {
                 let params = {
                     "title": values.title,
                     "subTitle": values.subTitle,
-                    "cover": cover[0],
                     "price": values.price,
                     "featureContent": featureContent,
                     "travelContent": travelContent,
                     "feeContent": feeContent
+                }
+                if(initPhoto.length > 0) {
+                    params.cover = initPhoto[0];
+                } 
+                if(cover.length > 0) {
+                    params.cover = cover[0];
                 }
                 if(this.props.match.params.id != ':id') {
                     params.id = this.props.match.params.id;
@@ -134,7 +144,7 @@ class EditForm extends Component {
                             message.success("更新成功");
                             setTimeout(() => {
                                 history.push('/scene/list')
-                            }, 2000);
+                            }, 1000);
                         }
                     )
                 } else {
@@ -143,7 +153,7 @@ class EditForm extends Component {
                             message.success("创建成功");
                             setTimeout(() => {
                                 history.push('/scene/list')
-                            }, 2000);
+                            }, 1000);
                         }
                     )
                 }
@@ -155,8 +165,20 @@ class EditForm extends Component {
         if(initPhoto.length > 0) {
             return false;
         }
+        if(fileList.length > 1) {
+            message.error('banner只能有一张');
+            return;
+        }
         if (file.status !== 'uploading') {
-            console.log('file.response.data', file.response.data)
+            console.log('file', file);
+            if(file.response.code == -3) {
+                message.error(file.response.msg);
+                this.setState(
+                    {
+                        isLogin: false
+                    }
+                )
+            }   
             this.setState(
                 {
                     cover: file.response.data
@@ -166,9 +188,10 @@ class EditForm extends Component {
         this.setState({ fileList: fileList });
     }
     beforeUpload = (file) => {
-        let { initPhoto } = this.state;
-        if(initPhoto.length > 0) {
-            message.error('头像只能有一个');
+        let { initPhoto, cover } = this.state;
+        console.log('initPhoto', initPhoto, cover);
+        if(initPhoto.length > 0 || cover.length > 0) {
+            message.error('banner只能有一张');
             return false
         }
     }
@@ -274,7 +297,7 @@ class EditForm extends Component {
                 <FormItem
                     wrapperCol={{ span: 12, offset: 6 }}
                 >
-                    <Button type="primary" htmlType="submit">Submit</Button>
+                    <Button type="primary" htmlType="submit">确定</Button>
                 </FormItem>
         </Form>
         );

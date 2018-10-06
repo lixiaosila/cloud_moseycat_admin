@@ -99,15 +99,21 @@ class GuiderLists extends Component {
     )
     this.getList(currentPage)
   }
+  handleAdd = () => {
+    this.props.history.push('/scene/custom/:id');
+  }
 
   render() {
     let { columns, data, loading, pagination} = this.state;
-    let { handlePage } = this;
+    let { handlePage, handleAdd } = this;
     let pageConfig = Object.assign({},pagination, {
       onChange: handlePage
     })
     return (
       <div className='shadow-radius'>
+          <Button type="primary" className="add_manage" onClick={handleAdd} style={{marginBottom: '20px'}}>
+            新增景点
+          </Button>
           <Table
               bordered
               columns={columns}

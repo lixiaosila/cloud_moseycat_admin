@@ -32,7 +32,12 @@ class ChartShow extends Component {
   render() {
     let { data } = this.state;
     return (
-        <div>
+        <div style={{background: '#fff'}}>
+            <div style={{overflow: 'hidden'}}>
+                <h2 style={{margin: '30px 50px', fontSize: '18px' }}>
+                    30日订单
+                </h2>
+            </div>
             <Chart height={window.innerHeight} data={data} forceFit>
                 <Axis name="day" />
                 <Axis name="count" />

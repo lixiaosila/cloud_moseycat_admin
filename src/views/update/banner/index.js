@@ -65,6 +65,9 @@ class GuiderBanner extends Component {
       res => {
         let list = res.data;
         list.id = 1;
+        if(list.cover == '' && list.subTitle.length == 0 && list.title) {
+            list = '';
+        }
         this.setState(
           {
             data: [list],

@@ -12,7 +12,8 @@ class EditForm extends Component {
         initPhoto: [],
         editor: '',
         content: '',
-        fileList: []
+        fileList: [],
+        isLogin: true
     }
     componentDidMount() {
         if(this.props.match.params.id != ':id') {
@@ -90,18 +91,27 @@ class EditForm extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                let { photo, content } = this.state;
-                if(photo.length == 0) {
+                if(!this.state.isLogin) {
+                    message.error('请先登录');
+                    return;
+                }
+                let { initPhoto, photo, content } = this.state;
+                if(initPhoto.length == 0 && photo.length == 0) {
                     message.error('请上传头像！');
                     return;
                 }
                 let { history } = this.props;
                 let params = {
                     "name": values.name,
-                    "photo": photo[0],
                     "field": values.field,
                     "title": values.title,
                     "content": content
+                }
+                if(initPhoto.length > 0) {
+                    params.photo = initPhoto[0];
+                } 
+                if(photo.length > 0) {
+                    params.photo = photo[0];
                 }
                 if(this.props.match.params.id != ':id') {
                     params.id = this.props.match.params.id;
@@ -131,8 +141,19 @@ class EditForm extends Component {
         if(initPhoto.length > 0) {
             return false;
         }
+        if(fileList.length > 1) {
+            message.error('头像只能有一张');
+            return;
+        }
         if (file.status !== 'uploading') {
-            console.log('file.response.data', file.response.data)
+            if(file.response.code == -3) {
+                message.error(file.response.msg);
+                this.setState(
+                    {
+                        isLogin: false
+                    }
+                )
+            }
             this.setState(
                 {
                     photo: file.response.data
@@ -142,9 +163,9 @@ class EditForm extends Component {
         this.setState({ fileList: fileList });
     }
     beforeUpload = (file) => {
-        let { initPhoto } = this.state;
-        if(initPhoto.length > 0) {
-            message.error('头像只能有一个');
+        let { initPhoto, photo } = this.state;
+        if(initPhoto.length > 0 || photo.length > 0) {
+            message.error('头像只能有一张');
             return false
         }
     }
@@ -299,6 +320,18 @@ class EditForm extends Component {
                 </FormItem>
                 <FormItem
                     {...formItemLayout}
+                    label="负责区域"
+                >
+                    {getFieldDecorator('area', {
+                        initialValue: data.area || '',
+                        rules: [{ required: true, message: '请输入定制师负责区域' }],
+                    })(
+                    
+                        <Input placeholder="请输入定制负责区域" style={{ width: '60%' }} />
+                    )}
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
                         label="头像"
                     >
                     {
@@ -340,7 +373,7 @@ class EditForm extends Component {
                 <FormItem
                     wrapperCol={{ span: 12, offset: 6 }}
                 >
-                    <Button type="primary" htmlType="submit">Submit</Button>
+                    <Button type="primary" htmlType="submit">确定</Button>
                 </FormItem>
         </Form>
         );

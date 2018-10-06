@@ -45,7 +45,7 @@ class App extends Component {
             return false;
         }
         if(fileList.length > 1) {
-            message.error('banner只能有一个');
+            message.error('banner只能有一张');
             return;
         }
         if (file.status !== 'uploading') {
@@ -68,9 +68,8 @@ class App extends Component {
     }
     beforeUpload = (file) => {
         let { initPhoto } = this.props;
-        console.log('file', file)
         if(!!initPhoto && this.state.cover) {
-            message.error('banner只能有一个');
+            message.error('banner只能有一张');
             return false
         }
     }
