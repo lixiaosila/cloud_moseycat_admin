@@ -8,8 +8,8 @@ message.config({
 });
 
 const api = axios.create({
-  baseURL: "http://moseycat.com:8081",
-  // baseURL: "",
+  // baseURL: "http://moseycat.com:8081",
+  baseURL: "",
   timeout: 5000,
   withCredentials: true // 允许携带cookie
 })
