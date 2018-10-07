@@ -23,6 +23,10 @@ class App extends Component {
                     message.error('请先登录');
                     return
                 }
+                if(!this.props.initPhoto && !this.state.cover) {
+                    message.error('请上传头像！');
+                    return;
+                }
                 if(this.props.initPhoto) {
                     values.cover = this.props.initPhoto;
                 } else {
@@ -78,7 +82,6 @@ class App extends Component {
     }
     beforeUpload = (file) => {
         let { initPhoto } = this.props;
-        console.log('file', file, !!initPhoto )
         if(!!initPhoto || this.state.cover) {
             message.error('banner只能有一个');
             return false
@@ -152,8 +155,6 @@ class App extends Component {
     }
 
     render() {
-        console.log('current', this.props.current);
-
         let { visible } = this.props;
         let { fileList } = this.state;
         let { current } = this.props;
@@ -161,10 +162,9 @@ class App extends Component {
         const { getFieldDecorator, getFieldValue } = this.props.form;
         getFieldDecorator('subTitle', { initialValue: current.subTitle || [] });
         let titles = getFieldValue('subTitle') || [];
-        console.log('titles', fileList) ;
 
         const props = {
-            action: 'http://moseycat.com:8081/admin/images',
+            action: '//b.moseycat.com/admin/images',
             onChange: this.handleChange,
             multiple: false,
             beforeUpload: this.beforeUpload,

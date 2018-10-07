@@ -8,7 +8,7 @@ message.config({
 });
 
 const api = axios.create({
-  baseURL: "http://moseycat.com:8081",
+  baseURL: "",
   timeout: 5000,
   withCredentials: true // 允许携带cookie
 })
@@ -41,8 +41,6 @@ api
     // 对响应数据做点什么
     if (response.data.code != 1) { 
       message.error(response.data.msg);
-      console.log('error.response', response.data)
-
       if(response.data.code == -3) {
         window.location.href = '#/login'
       }
@@ -52,10 +50,7 @@ api
 
   }, function (error) {
     // 对响应错误做点什么
-      console.log('error.response', error.response)
-
     if (error.response) {
-      console.log('error.response', error.response)
       if (error.response.status === 401) {
         // 如果返回401 即没有权限，跳到登录页重新登录
          message.error(error.response.data.msg)

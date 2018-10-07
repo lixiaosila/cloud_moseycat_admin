@@ -133,10 +133,9 @@ class App extends Component {
         const { getFieldDecorator, getFieldValue } = this.props.form;
         getFieldDecorator('subTitle', { initialValue: [] });
         let titles = getFieldValue('subTitle') || [];
-        console.log('titles', titles) ;
 
         const props = {
-            action: 'http://moseycat.com:8081/admin/images',
+            action: '//b.moseycat.com/admin/images',
             onChange: this.handleChange,
             multiple: false,
             beforeUpload: this.beforeUpload,

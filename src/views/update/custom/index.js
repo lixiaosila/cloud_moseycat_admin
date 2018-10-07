@@ -65,7 +65,7 @@ class EditForm extends Component {
             'undo',  // 撤销
             'redo'  // 重复
         ];
-        this.editor.customConfig.uploadImgServer = 'http://moseycat.com:8081/admin/images';
+        this.editor.customConfig.uploadImgServer = '//b.moseycat.com/admin/images';
         this.editor.create();
     }
     getDefaultPhoto = () => {
@@ -295,7 +295,7 @@ class EditForm extends Component {
         let fields = getFieldValue('field') || [];
         
         const props = {
-            action: 'http://moseycat.com:8081/admin/images',
+            action: '//b.moseycat.com/admin/images',
             onChange: this.handleUpload,
             listType: "picture",
             multiple: false,

@@ -86,7 +86,7 @@ class EditForm extends Component {
             'undo',  // 撤销
             'redo'  // 重复
         ];
-        this.editor.customConfig.uploadImgServer = 'http://moseycat.com:8081/admin/images';
+        this.editor.customConfig.uploadImgServer = '//b.moseycat.com/admin/images';
         this.editor.create();
     }
     getDefaultPhoto = () => {
@@ -104,7 +104,6 @@ class EditForm extends Component {
         return '';
     }
     handlePicClose = () => {
-        console.log('12')
         this.setState({
             initPhoto: []
         })
@@ -170,7 +169,6 @@ class EditForm extends Component {
             return;
         }
         if (file.status !== 'uploading') {
-            console.log('file', file);
             if(file.response.code == -3) {
                 message.error(file.response.msg);
                 this.setState(
@@ -189,7 +187,6 @@ class EditForm extends Component {
     }
     beforeUpload = (file) => {
         let { initPhoto, cover } = this.state;
-        console.log('initPhoto', initPhoto, cover);
         if(initPhoto.length > 0 || cover.length > 0) {
             message.error('banner只能有一张');
             return false
@@ -224,7 +221,7 @@ class EditForm extends Component {
         };
         
         const props = {
-            action: 'http://moseycat.com:8081/admin/images',
+            action: '//b.moseycat.com/admin/images',
             onChange: this.handleUpload,
             listType: "picture",
             multiple: false,
