@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import './index.less'
 import {connect} from 'react-redux'
-import {Button, Input, Icon, Form, Checkbox,Spin } from 'antd'
+import {Button, Input, Icon, Form } from 'antd'
 import {login} from '@/redux/actions'
 import PropTypes from 'prop-types'
 
