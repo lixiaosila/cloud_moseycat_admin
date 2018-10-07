@@ -85,7 +85,7 @@ class ChartShow extends Component {
                             <Card title="总订单数" bordered={false}>{count}</Card>
                         </Col>
                         <Col span={8}>
-                            <Card title="最近30日总订单数" bordered={false}>{last30DayCount}</Card>
+                            <Card title="最近30日订单数" bordered={false}>{last30DayCount}</Card>
                         </Col>
                     </Row>
                 </div>
