@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import './index.less'
 import {connect} from 'react-redux'
-import {Button, Input, Icon, Form } from 'antd'
+import {Button, Checkbox, Input, Icon, Form } from 'antd'
 import {login} from '@/redux/actions'
 import PropTypes from 'prop-types'
 
@@ -30,8 +30,8 @@ class Login extends Component {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const {user,password,remember} = values
-        remember ? localStorage.setItem('user',JSON.stringify({user,password})) : localStorage.removeItem('user')
+        const {user, password, remember} = values
+        remember ? localStorage.setItem('user',JSON.stringify({user,password})) : localStorage.removeItem('user');
         this.login({
           username: user,
           password
@@ -99,6 +99,13 @@ class Login extends Component {
                         />}
                       type="password"
                   />
+                )}
+              </FormItem>
+              <FormItem>
+                {getFieldDecorator('remember', {
+                  valuePropName: 'checked'
+                })(
+                  <Checkbox>记住密码</Checkbox>
                 )}
               </FormItem>
               <FormItem>
