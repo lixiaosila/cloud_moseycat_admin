@@ -201,7 +201,7 @@ class TableEdit extends Component {
       <div className='shadow-radius'>
           <div style={{ textAlign: "right" }}>
             <Search
-              placeholder="请输入姓名或手机号"
+              placeholder="请输入需要查询的信息"
               onSearch={handleSearch}
               enterButton
               style={{ width: 200, marginBottom: '20px' }}
