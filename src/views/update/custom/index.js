@@ -65,7 +65,24 @@ class EditForm extends Component {
             'undo',  // 撤销
             'redo'  // 重复
         ];
+        // 隐藏“网络图片”tab
+        this.editor.customConfig.showLinkImg = false;
+        this.editor.customConfig.withCredentials = true;
         this.editor.customConfig.uploadImgServer = '//b.moseycat.com/admin/images';
+        this.editor.customConfig.uploadFileName = 'image[]';
+        this.editor.customConfig.uploadImgHooks = {
+            success: function success(xhr, editor, result) {
+
+            },
+            fail: function fail(xhr, editor, result) {
+                if(result.code == -3) {
+                    message.error('请先登录')
+                }
+            },
+            error: function error(xhr, editor) {
+                // 图片上传出错时触发
+            },
+        }
         this.editor.create();
     }
     getDefaultPhoto = () => {
@@ -105,6 +122,7 @@ class EditForm extends Component {
                     "name": values.name,
                     "field": values.field,
                     "title": values.title,
+                    'area': values.area,
                     "content": content
                 }
                 if(initPhoto.length > 0) {
