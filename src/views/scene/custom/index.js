@@ -125,6 +125,12 @@ class EditForm extends Component {
             initPhoto: []
         })
     }
+    onRemove = () => {
+        this.setState({
+            cover: [],
+            fileList: []
+        })
+    }
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
@@ -186,7 +192,7 @@ class EditForm extends Component {
             return;
         }
         if (file.status !== 'uploading') {
-            if(file.response.code == -3) {
+            if(file.response && file.response.code == -3) {
                 message.error(file.response.msg);
                 this.setState(
                     {
@@ -244,7 +250,8 @@ class EditForm extends Component {
             multiple: false,
             withCredentials: true,
             beforeUpload: this.beforeUpload,
-            fileList: fileList
+            fileList: fileList,
+            onRemove: this.onRemove
         };
         
         return (
