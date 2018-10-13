@@ -17,7 +17,14 @@ class GuiderLists extends Component {
         dataIndex: 'title',
       }, 
       {
-        title: 'banner',
+        title: '景点banner',
+        dataIndex: 'listCover',
+        render: (text) => {
+          return <img src={text} style={{maxWidth: '100px'}} />
+        }
+      },
+      {
+        title: '详情banner',
         dataIndex: 'cover',
         render: (text) => {
           return <img src={text} style={{maxWidth: '100px'}} />
@@ -26,6 +33,19 @@ class GuiderLists extends Component {
       {
         title: '价格',
         dataIndex: 'price',
+      },
+      {
+        title: '旅游景点介绍语',
+        dataIndex: 'listTitle',
+        render: (text) => {
+          return text.map(
+            (item, index) => {
+                return (
+                  <Tag color="#2db7f5" key={index}>{text[index]}</Tag> 
+                )                 
+            }
+          )
+        }
       },
       {
         title:'操作',
