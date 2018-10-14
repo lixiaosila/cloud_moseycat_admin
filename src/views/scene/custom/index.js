@@ -1,7 +1,11 @@
 import React, {Component} from 'react';
 import { Form, Button, Upload, Icon, message, Input, Radio, Select } from 'antd';
-import E from 'wangeditor';
 import { getScene, addScene, putScene } from '@/server'
+
+// 引入编辑器以及编辑器样式
+import BraftEditor from 'braft-editor'
+import { ContentUtils } from 'braft-utils'
+import 'braft-editor/dist/index.css'
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -11,6 +15,8 @@ class EditForm extends Component {
     state = {
         data: [],
         editor: '',
+        excludeControls:  ['letter-spacing','line-height','code','emoji','superscript','subscript','media'],
+        editorState: '',
         featureContent: '',
         travelContent: '',
         feeContent: '',
@@ -25,7 +31,6 @@ class EditForm extends Component {
         if(this.props.match.params.id != ':id') {
             this.getInfo(this.props.match.params.id);
         }
-        this.getEditConfig();
     }
     getInfo(id) {
         let params = {
@@ -42,77 +47,12 @@ class EditForm extends Component {
                         travelContent: res.data.travelContent,
                         feeContent: res.data.feeContent,
                         titles: res.data.listTitle,
-                        cateId: res.data.cateId == 0 ? '' : res.data.cateId
+                        cateId: res.data.cateId == 0 ? '' : res.data.cateId,
+                        editorState: BraftEditor.createEditorState(res.data.featureContent)
                     }
                 )
-                this.swicthContent(1);
             }
         )
-    }
-    getEditConfig() {    
-        const elem = this.refs.editorElem;
-        this.editor = new E(elem);
-        // 使用 onchange 函数监听内容的变化，并实时更新到 state 中
-        this.editor.customConfig.onchange = html => {
-            if(this.state.currentIndex == 1) {
-                this.setState({
-                    featureContent: html
-                })
-                return;
-            }
-            if(this.state.currentIndex == 2) {
-                this.setState({
-                    travelContent: html
-                })
-                return;
-            }
-            if(this.state.currentIndex == 3) {
-                this.setState({
-                    feeContent: html
-                })
-                return;
-            }
-        };
-        this.editor.customConfig.menus = [
-            'head',  // 标题
-            'bold',  // 粗体
-            'fontSize',  // 字号
-            'fontName',  // 字体
-            'italic',  // 斜体
-            'underline',  // 下划线
-            'strikeThrough',  // 删除线
-            'foreColor',  // 文字颜色
-            'backColor',  // 背景颜色
-            'link',  // 插入链接
-            'list',  // 列表
-            'justify',  // 对齐方式
-            'quote',  // 引用
-            'image',  // 插入图片
-            'undo',  // 撤销
-            'redo'  // 重复
-        ];
-        // 隐藏“网络图片”tab
-        this.editor.customConfig.showLinkImg = false;
-        this.editor.customConfig.withCredentials = true;
-        this.editor.customConfig.uploadImgServer = '//b.moseycat.com/admin/images';
-        this.editor.customConfig.uploadFileName = 'image[]';
-        this.editor.customConfig.uploadImgHooks = {
-            success: function success(xhr, editor, result) {
-                
-            },
-            fail: function fail(xhr, editor, result) {
-                if(result.code == -3) {
-                    message.error('请先登录')
-                }
-            },
-            error: function error(xhr, editor) {
-                // 图片上传出错时触发
-            },
-        }
-        this.editor.create();
-    }
-    getArea = () => {
-
     }
     getDefaultPhoto = (type) => {
         let { previewListCover, previewCover } = this.state;
@@ -152,7 +92,7 @@ class EditForm extends Component {
             })
         }
     }
-    handleSubmit = (e) => {
+    handleFormSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
@@ -165,7 +105,14 @@ class EditForm extends Component {
                     message.error('请先上传图片！');
                     return;
                 }
-                
+                if(!cateId) {
+                    message.error('请先选择分类！');
+                    return;
+                }
+                if(values.listTitle.length == 0) {
+                    message.error('请至少输入1条旅游景点介绍语！');
+                    return;
+                }
                 let { history } = this.props;
                 let params = {
                     "title": values.title,
@@ -204,7 +151,6 @@ class EditForm extends Component {
         });
     }
     handleUploadCover = (info, type) => {
-        console.log('type', type);
         if (info.file.status !== 'uploading') {
             console.log(info.file, info.fileList);
         }
@@ -241,17 +187,28 @@ class EditForm extends Component {
     }
     swicthContent = (value) => {
         if(value == 1) {
-            this.editor.txt.html(this.state.featureContent);
+            this.setState(
+                {
+                    editorState: BraftEditor.createEditorState(this.state.featureContent)
+                }
+            )
         }
         if(value == 2) {
-            this.editor.txt.html(this.state.travelContent);
+            this.setState(
+                {
+                    editorState: BraftEditor.createEditorState(this.state.travelContent)
+                }
+            )
         }
         if(value == 3) {
-            this.editor.txt.html(this.state.feeContent);
+            this.setState(
+                {
+                    editorState: BraftEditor.createEditorState(this.state.feeContent)
+                }
+            )
         }
     }
     getTitles = (titles) => {
-        console.log('titles', titles)
         return titles.map((item, index) => {
             return  <FormItem
                         required={false}
@@ -311,16 +268,99 @@ class EditForm extends Component {
             }
         )
     }
+    handleChange = (editorState) => {
+        if(this.state.currentIndex == 1) {
+            this.setState({ 
+                editorState,
+                featureContent: editorState.toHTML()
+            })
+        }
+        if(this.state.currentIndex == 2) {
+            this.setState({ 
+                editorState,
+                travelContent: editorState.toHTML()
+            })
+        }
+        if(this.state.currentIndex == 3) {
+            this.setState({ 
+                editorState,
+                feeContent: editorState.toHTML()
+            })
+        }
+    }
+    uploadHandler = (info) => {
+        if (info.file.status === 'done') {
+            message.success(`${info.file.name} 上传成功`);
+            this.setState(
+                {
+                    editorState: ContentUtils.insertMedias(this.state.editorState, [{
+                        type: 'IMAGE',
+                        url: info.file.response.data[0]
+                    }])
+                }
+            )
+        } else if (info.file.status === 'error') {
+            message.error(`${info.file.name} 上传失败.`);
+        }
+    }
+
 
     render() {
         let { data, cateId } = this.state;
         let { handleSelect } = this;
+        let selectValue = '';
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 4},
             wrapperCol: { span: 14 },
         };
+
+        if(cateId == 1) {
+            selectValue = '文化深度'
+        }
+        if(cateId == 2) {
+            selectValue = '亲子游学'
+        }
+        if(cateId == 3) {
+            selectValue = '匠心蜜月'
+        }
+        if(cateId == 4) {
+            selectValue = '精致海岛'
+        }
         
+        const props_extend = {
+            // action: 'http://moseycat.com:8081/admin/images',
+            action: '//b.moseycat.com/admin/images',
+            onChange: this.uploadHandler,
+            showUploadList: false,
+            multiple: false,
+            withCredentials: true,
+        };
+
+        const extendControls = [
+            {
+                key: 'antd-uploader',
+                type: 'component',
+                component: (
+                    <Upload
+                        name="image[]" {...props_extend}
+                    >
+                        <button className="control-item button upload-button" data-title="插入图片">
+                            <Icon type="picture" theme="filled" />
+                        </button>
+                    </Upload>
+                )
+            }
+        ]
+
+        const editorProps = {
+            height: 500,
+            value: this.state.editorState,
+            onChange: this.handleChange,
+            excludeControls: this.state.excludeControls,
+            extendControls: extendControls
+        }
+
         getFieldDecorator('listTitle', { initialValue: data.listTitle || [] });
         let titles = getFieldValue('listTitle') || [];
 
@@ -341,7 +381,7 @@ class EditForm extends Component {
         };
         
         return (
-            <Form onSubmit={this.handleSubmit}>
+            <Form>
                 <FormItem
                     {...formItemLayout}
                     label="旅游景点"
@@ -381,7 +421,7 @@ class EditForm extends Component {
                     {...formItemLayout}
                         label="选择景点分类"
                     >
-                    <Select value = {cateId} style={{ width: 120 }} onChange={handleSelect} style={{ width: '60%' }}>
+                    <Select value = {selectValue} style={{ width: 120 }} onChange={handleSelect} style={{ width: '60%' }}>
                         <Option value="1">文化深度</Option>
                         <Option value="2">亲子游学</Option>
                         <Option value="3">匠心蜜月</Option>
@@ -437,12 +477,14 @@ class EditForm extends Component {
                         <Radio value={2}>行程安排</Radio>
                         <Radio value={3}>费用包括</Radio>
                     </RadioGroup>
-                    <div ref="editorElem" style={{textAlign: 'left',  margin: '20px'}}></div> 
+                    <div style={{ border: '1px solid #c0c2c4', margin: '0 20px'}}>
+                        <BraftEditor {...editorProps}/>
+                    </div>
                 </FormItem>
                 <FormItem
                     wrapperCol={{ span: 12, offset: 6 }}
                 >
-                    <Button type="primary" htmlType="submit">确定</Button>
+                    <Button type="primary" onClick={this.handleFormSubmit}>确定</Button>
                 </FormItem>
         </Form>
         );

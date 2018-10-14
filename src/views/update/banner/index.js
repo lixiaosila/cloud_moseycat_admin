@@ -7,6 +7,7 @@ class GuiderBanner extends Component {
   state = {
     data: [],
     addable: false,
+    cover: '',
     current: {},
     columns : [
       {
@@ -86,6 +87,7 @@ class GuiderBanner extends Component {
     this.setState(
         {
             current: row,
+            cover: row.cover,
             addable: true
         }
     )
@@ -94,6 +96,7 @@ class GuiderBanner extends Component {
     this.setState(
       {
         current: {},
+        cover: '',
         addable: true
       }
     )
@@ -116,17 +119,24 @@ class GuiderBanner extends Component {
     )
   }
   handlePicClose =  () => {
-    let result = Object.assign(this.state.current, {cover: ''});
     this.setState(
-        {
-            current: result
-        }
-      )
+      {
+        cover: ''
+      }
+    )
   }
-  
+  handlePicUpload = (url) => {
+    console.log('url', url)
+    this.setState(
+      {
+        cover: url
+      }
+    )
+  }
+
   render() {
-    let { addable, columns, data, loading, current} = this.state;
-    let { handleCreate, handleAddConfirm, handleCancel, handlePicClose } = this;
+    let { addable, columns, data, loading, current, cover} = this.state;
+    let { handleCreate, handleAddConfirm, handleCancel, handlePicClose, handlePicUpload } = this;
 
     return (
       <div className='shadow-radius'>
@@ -140,7 +150,7 @@ class GuiderBanner extends Component {
               loading={loading}
               style={{marginBottom: '20px'}}
           />
-          <AddForm visible={addable} initPhoto={current.cover} current = {current} onConfirm={handleAddConfirm} onCancel={handleCancel} handlePicClose={handlePicClose}/>
+          <AddForm visible={addable} cover={cover} current = {current} onConfirm={handleAddConfirm} onCancel={handleCancel} handlePicClose={handlePicClose} handlePicUpload={handlePicUpload}/>
       </div>
     )
   }

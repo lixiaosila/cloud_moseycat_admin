@@ -48,6 +48,34 @@ class GuiderLists extends Component {
         }
       },
       {
+        title: '所属分类',
+        dataIndex: 'cateId',
+        render: (text) => {
+          switch(text) {
+            case 1:
+              return(
+                <Tag color="#108ee9">文化深度</Tag> 
+              )
+            case 2:
+              return(
+                <Tag color="#108ee9">亲子游学</Tag> 
+              )
+            case 3:
+              return(
+                <Tag color="#108ee9">匠心蜜月</Tag> 
+              )
+            case 4:
+              return(
+                <Tag color="#108ee9">精致海岛</Tag> 
+              )
+            default:
+              return(
+                <Tag color="#f5222d">暂无类型</Tag> 
+              )
+          }
+        }
+      },
+      {
         title:'操作',
         dataIndex: 'control',
         width: '22%',

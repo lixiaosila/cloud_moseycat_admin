@@ -5,9 +5,7 @@ const FormItem = Form.Item;
 
 class App extends Component {
     state = {
-        fileList: [],
-        cover: '',
-        isLogin: true
+
     }
     isEmpty(data) {
         if (JSON.stringify(data) === '{}') {
@@ -19,25 +17,12 @@ class App extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                if(!this.state.isLogin) {
-                    message.error('请先登录');
-                    return
-                }
-                if(!this.props.initPhoto && !this.state.cover) {
-                    message.error('请上传头像！');
+                if(!this.props.cover) {
+                    message.error('请上传banner图！');
                     return;
                 }
-                if(this.props.initPhoto) {
-                    values.cover = this.props.initPhoto;
-                } else {
-                    values.cover = this.state.cover;
-                }
+                values.cover = this.props.cover;
                 this.props.onConfirm(values);
-                this.setState(
-                    {
-                        fileList: []
-                    }
-                )
                 this.props.form.resetFields();
                 this.props.onCancel();
             }
@@ -45,48 +30,10 @@ class App extends Component {
     }
     handleCancel = (e) => {
         e.preventDefault();
-        this.setState(
-            {
-                fileList: []
-            }
-        )
         this.props.form.resetFields();
         this.props.onCancel();
     }
-    handleChange = ({file, fileList}) => {
-        let { initPhoto } = this.props;
-        if(!!initPhoto) {
-            return false;
-        }
-        if(fileList.length > 1) {
-            message.error('banner只能有一个');
-            return;
-        }
-        if (file.status !== 'uploading') {
-            if(file.response.code == -3) {
-                message.error(file.response.msg);
-                this.setState(
-                    {
-                        isLogin: false
-                    }
-                )
-            }   
-            this.setState(
-                {
-                    cover: file.response.data[0]
-                }
-            )
-        }
 
-        this.setState({ fileList: fileList });
-    }
-    beforeUpload = (file) => {
-        let { initPhoto } = this.props;
-        if(!!initPhoto || this.state.cover) {
-            message.error('banner只能有一个');
-            return false
-        }
-    }
     getSubTitles = (list) => {
         return list.map((item, index) => {
             return  <FormItem
@@ -139,8 +86,7 @@ class App extends Component {
             subTitle: nextTitles,
         });
     }
-    getDefaultPhoto = (current) => {
-        let { cover } = current;
+    getDefaultPhoto = (cover) => {
         return(
             <div className="upload_img_wrap" style={{width: '100%'}}>
                 <img src={cover} className="photo"/>
@@ -153,24 +99,29 @@ class App extends Component {
     handlePicClose = () => {
         this.props.handlePicClose();
     }
+    handleUpload = (info, type) => {
+        if (info.file.status === 'done') {
+            message.success(`${info.file.name} 上传成功`);
+            this.props.handlePicUpload(info.file.response.data[0]);
+        } else if (info.file.status === 'error') {
+            message.error(`${info.file.name} 上传失败.`);
+        }
+    }
 
     render() {
-        let { visible } = this.props;
-        let { fileList } = this.state;
-        let { current } = this.props;
+        let { visible, current, cover } = this.props;
         let { handleSubmit, handleCancel } = this;
         const { getFieldDecorator, getFieldValue } = this.props.form;
         getFieldDecorator('subTitle', { initialValue: current.subTitle || [] });
         let titles = getFieldValue('subTitle') || [];
-
         const props = {
+            // action: 'http://moseycat.com:8081/admin/images',
             action: '//b.moseycat.com/admin/images',
-            onChange: this.handleChange,
+            onChange: this.handleUpload,
             multiple: false,
-            beforeUpload: this.beforeUpload,
-            fileList: fileList,
             withCredentials: true,
         };
+
         return (
             <Modal
             title="定制师banner"
@@ -198,12 +149,12 @@ class App extends Component {
                         labelCol={{ span: 7 }}
                         wrapperCol={{ span: 15 }}
                     >
-                        {current.cover && this.getDefaultPhoto(current)}
                         <Upload name="image[]" {...props}>
                             <Button>
                                 <Icon type="upload" /> upload
                             </Button>
                         </Upload>
+                        {cover && this.getDefaultPhoto(cover)}
                     </FormItem>
                     <FormItem
                         label="描述文字"
