@@ -98,14 +98,26 @@ class EditForm extends Component {
             }
         });
     }
+    beforeUpload = (file) => {
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+          message.error('图片尺寸超过2M，建议压缩后上传!');
+        }
+        return isLt2M;
+    }
     handleUpload = (info, type) => {
         if (info.file.status === 'done') {
-            message.success(`${info.file.name} 上传成功`);
-            this.setState(
-                {
-                    previewPhoto: info.file.response.data[0]
-                }
-            )
+            if(info.file.response.code == 1) {
+                message.success(`${info.file.name} 上传成功`);
+                this.setState(
+                    {
+                        previewPhoto: info.file.response.data[0]
+                    }
+                )
+            } else {
+                message.error(`${info.file.name} 上传失败.`);
+            }
+            
         } else if (info.file.status === 'error') {
             message.error(`${info.file.name} 上传失败.`);
         }
@@ -259,6 +271,7 @@ class EditForm extends Component {
             // action: 'http://moseycat.com:8081/admin/images',
             action: '//b.moseycat.com/admin/images',
             onChange: this.handleUpload,
+            beforeUpload: this.beforeUpload,
             multiple: false,
             withCredentials: true,
         };
@@ -267,6 +280,7 @@ class EditForm extends Component {
             // action: 'http://moseycat.com:8081/admin/images',
             action: '//b.moseycat.com/admin/images',
             onChange: this.uploadHandler,
+            beforeUpload: this.beforeUpload,
             showUploadList: false,
             multiple: false,
             withCredentials: true,
