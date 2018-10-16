@@ -241,15 +241,19 @@ class EditForm extends Component {
     }
     uploadHandler = (info) => {
         if (info.file.status === 'done') {
-            message.success(`${info.file.name} 上传成功`);
-            this.setState(
-                {
-                    content: ContentUtils.insertMedias(this.state.content, [{
-                        type: 'IMAGE',
-                        url: info.file.response.data[0]
-                    }])
-                }
-            )
+            if(info.file.response.code == 1) {
+                message.success(`${info.file.name} 上传成功`);
+                this.setState(
+                    {
+                        content: ContentUtils.insertMedias(this.state.content, [{
+                            type: 'IMAGE',
+                            url: info.file.response.data[0]
+                        }])
+                    }
+                )
+            } else {
+                message.error(`${info.file.name} 上传失败.`);
+            }
         } else if (info.file.status === 'error') {
             message.error(`${info.file.name} 上传失败.`);
         }
