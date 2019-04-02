@@ -1,7 +1,9 @@
 import {
-    getUser
+    getUser,
+    getConfig
 } from './user';
 
 export {
-    getUser
+    getUser,
+    getConfig
 }

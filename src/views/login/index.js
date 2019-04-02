@@ -42,7 +42,7 @@ class Login extends Component {
     }
     goDashBoard() {
         let {history} = this.context.router;
-        history.replace('/info/order');
+        history.replace('/user/detail');
     }
 
     render() {

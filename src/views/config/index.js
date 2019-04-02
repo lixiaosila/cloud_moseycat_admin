@@ -1,25 +1,30 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { Form, Button, Upload, Icon, message, Input } from 'antd';
+import { getConfig } from '@/server/index';
 
 const FormItem = Form.Item;
   
 class Config extends Component {
     state = {
         data: [],
-        excludeControls:  ['letter-spacing','line-height','code','emoji','superscript','subscript','media'],
-        content: '',
         previewPhoto: '',
-        isLogin: true
+        awardTime: "",
+        endStartTime: "",
+        keyword: "",
+        rule: ""
     }
     componentDidMount() {
-        if(this.props.match.params.id != ':id') {
-            this.getInfo(this.props.match.params.id);
-        }
+        this.getConfig();
     }
-    getInfo(id) {
+    getConfig() {
         let params = {
-            id
+            debug: 1
         };
+        getConfig(params).then(
+            res => {
+                console.log('res', res);
+            }
+        )
     }
     getDefaultPhoto = () => {
         let { previewPhoto } = this.state;
@@ -44,18 +49,17 @@ class Config extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                let { previewPhoto, content } = this.state;
+                let { previewPhoto } = this.state;
                 if(!previewPhoto) {
                     message.error('请上传头像！');
                     return;
                 }
                 let { history } = this.props;
                 let params = {
-                    "name": values.name,
-                    "field": values.field,
-                    "title": values.title,
-                    "area": values.area,
-                    "content": content.toHTML(),
+                    "cover": "http://baidu.com",
+                    "endStartTime": "2019-04-01 00:00:00",
+                    "awardTime": "2019-04-02 00:00:00",
+                    "rule": "活动规则",
                     "photo": previewPhoto
                 }
                 if(this.props.match.params.id != ':id') {
@@ -110,29 +114,6 @@ class Config extends Component {
                     </FormItem>
         })
     }
-    getFields = (titles) => {
-        return titles.map((item, index) => {
-            return  <FormItem
-                        required={false}
-                        key={index}
-                    >
-                        <div style={{ width: '80%', marginRight: 8, display: 'inline-block' }}>
-                            <div className="fields_wrap">
-                                <Input placeholder="标题" value={item.title} style={{ boxSizing: 'border-box',width: '50%', marginRight: 4 }} onChange={this.handleField.bind(this, index, 0)}/>
-                                <Input placeholder="内容" value={item.content} style={{ width: '50%' }} onChange={this.handleField.bind(this, index, 1)}/>
-                            </div>
-                        </div>
-                        {titles.length > 0 ? (
-                            <Icon
-                                className="dynamic-delete-button"
-                                type="minus-circle-o"
-                                onClick={() => this.removeField(item)}
-                            />
-                            ) : null
-                        }
-                    </FormItem>
-        })
-    }
 
     addTitle = () => {
         const { form } = this.props;
@@ -166,35 +147,6 @@ class Config extends Component {
         form.setFieldsValue({
             title: nextTitles,
         });
-    }
-    handleField = (key, type, e) => {
-        const { form } = this.props;
-        let fields = form.getFieldValue('field');
-        if(type == 0) {
-            fields[key]['title'] = e.target.value;
-        } else {
-            fields[key]['content'] = e.target.value;
-        }
-        form.setFieldsValue({
-            field: fields,
-        });
-        
-    }
-    removeField = (item) => {
-        const { form } = this.props;
-        const basic_titles = form.getFieldValue('field');
-        if (basic_titles.length === 0) {
-            return;
-        }
-        let nextFields = basic_titles.filter(key => key !== item);
-        form.setFieldsValue({
-            field: nextFields,
-        });
-    }
-    handleChange = (content) => {
-        this.setState({ 
-            content
-        })
     }
 
     render() {
