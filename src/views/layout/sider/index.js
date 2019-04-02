@@ -18,7 +18,7 @@ class SiderComponent extends Component {
       >
         <div className="logo">
           {
-            collapsed || <span> 溜达猫管理后台 </span>
+            collapsed || <span> 层峰管理后台 </span>
           }
         </div>
         <Menu

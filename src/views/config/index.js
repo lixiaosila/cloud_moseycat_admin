@@ -1,15 +1,9 @@
 import React, {Component} from 'react';
 import { Form, Button, Upload, Icon, message, Input } from 'antd';
-import { getGuider, addGuider, putGuider } from '@/server'
-
-// 引入编辑器以及编辑器样式
-import BraftEditor from 'braft-editor'
-import { ContentUtils } from 'braft-utils'
-import 'braft-editor/dist/index.css'
 
 const FormItem = Form.Item;
   
-class EditForm extends Component {
+class Config extends Component {
     state = {
         data: [],
         excludeControls:  ['letter-spacing','line-height','code','emoji','superscript','subscript','media'],
@@ -26,17 +20,6 @@ class EditForm extends Component {
         let params = {
             id
         };
-        getGuider(params).then(
-            res => {
-                this.setState(
-                    {
-                        data: res.data,
-                        previewPhoto: res.data.photo,
-                        content: BraftEditor.createEditorState(res.data.content)
-                    }
-                )
-            }
-        )
     }
     getDefaultPhoto = () => {
         let { previewPhoto } = this.state;
@@ -77,23 +60,9 @@ class EditForm extends Component {
                 }
                 if(this.props.match.params.id != ':id') {
                     params.id = this.props.match.params.id;
-                    putGuider(params).then(
-                        res => {
-                            message.success("更新成功");
-                            setTimeout(() => {
-                                history.push('/update/guider')
-                            }, 2000);
-                        }
-                    )
+                    
                 } else {
-                    addGuider(params).then(
-                        res => {
-                            message.success("创建成功");
-                            setTimeout(() => {
-                                history.push('/update/guider')
-                            }, 2000);
-                        }
-                    )
+                    
                 }
             }
         });
@@ -128,7 +97,7 @@ class EditForm extends Component {
                         required={false}
                         key={index}
                     >
-                        <Input placeholder="请输入宣传语" value={item} style={{ width: '60%', marginRight: 8 }} onChange={this.handleTitle.bind(this, index)}/>
+                        <Input placeholder="请输入宣传语" value={item} style={{ width: '80%', marginRight: 8 }} onChange={this.handleTitle.bind(this, index)}/>
 
                         {titles.length > 0 ? (
                             <Icon
@@ -147,7 +116,7 @@ class EditForm extends Component {
                         required={false}
                         key={index}
                     >
-                        <div style={{ width: '60%', marginRight: 8, display: 'inline-block' }}>
+                        <div style={{ width: '80%', marginRight: 8, display: 'inline-block' }}>
                             <div className="fields_wrap">
                                 <Input placeholder="标题" value={item.title} style={{ boxSizing: 'border-box',width: '50%', marginRight: 4 }} onChange={this.handleField.bind(this, index, 0)}/>
                                 <Input placeholder="内容" value={item.content} style={{ width: '50%' }} onChange={this.handleField.bind(this, index, 1)}/>
@@ -198,18 +167,6 @@ class EditForm extends Component {
             title: nextTitles,
         });
     }
-    addField = () => {
-        const { form } = this.props;
-        const basic_fields = form.getFieldValue('field');
-        let tpl = {
-            title: '',
-            content: ''
-        };
-        let nextFields = basic_fields.concat(tpl);
-        form.setFieldsValue({
-            field: nextFields,
-        });
-    }
     handleField = (key, type, e) => {
         const { form } = this.props;
         let fields = form.getFieldValue('field');
@@ -239,25 +196,6 @@ class EditForm extends Component {
             content
         })
     }
-    uploadHandler = (info) => {
-        if (info.file.status === 'done') {
-            if(info.file.response.code == 1) {
-                message.success(`${info.file.name} 上传成功`);
-                this.setState(
-                    {
-                        content: ContentUtils.insertMedias(this.state.content, [{
-                            type: 'IMAGE',
-                            url: info.file.response.data[0]
-                        }])
-                    }
-                )
-            } else {
-                message.error(`${info.file.name} 上传失败.`);
-            }
-        } else if (info.file.status === 'error') {
-            message.error(`${info.file.name} 上传失败.`);
-        }
-    }
 
     render() {
         let { data, previewPhoto } = this.state;
@@ -280,71 +218,37 @@ class EditForm extends Component {
             withCredentials: true,
         };
 
-        const props_extend = {
-            // action: 'http://moseycat.com:8081/admin/images',
-            action: '//b.moseycat.com/admin/images',
-            onChange: this.uploadHandler,
-            beforeUpload: this.beforeUpload,
-            showUploadList: false,
-            multiple: false,
-            withCredentials: true,
-        };
-
-        const extendControls = [
-            {
-                key: 'antd-uploader',
-                type: 'component',
-                component: (
-                    <Upload
-                        name="image[]" {...props_extend}
-                    >
-                        <button className="control-item button upload-button" data-title="插入图片">
-                            <Icon type="picture" theme="filled" />
-                        </button>
-                    </Upload>
-                )
-            }
-        ]
-
-        const editorProps = {
-            height: 500,
-            value: this.state.content,
-            onChange: this.handleChange,
-            excludeControls: this.state.excludeControls,
-            extendControls: extendControls
-        }
-        
         return (
             <Form>
                 <FormItem
                     {...formItemLayout}
-                    label="定制师"
+                    label="活动持续时间"
                 >
                     {getFieldDecorator('name', {
                         initialValue: data.name || '',
                         rules: [{ required: true, message: '请输入定制师昵称' }],
                     })(
                     
-                        <Input placeholder="请输入定制师昵称" style={{ width: '60%' }} />
+                        <Input placeholder="请输入定制师昵称" style={{ width: '80%' }} />
                     )}
                 </FormItem>
                 <FormItem
                     {...formItemLayout}
-                    label="负责区域"
+                    label="中奖公布时间"
                 >
                     {getFieldDecorator('area', {
                         initialValue: data.area || '',
                         rules: [{ required: true, message: '请输入定制师负责区域' }],
                     })(
                     
-                        <Input placeholder="请输入定制负责区域" style={{ width: '60%' }} />
+                        <Input placeholder="请输入定制负责区域" style={{ width: '80%' }} />
                     )}
                 </FormItem>
                 <FormItem
                     {...formItemLayout}
-                        label="头像"
+                        label="首页banner"
                     >
-                    <div style={{ width: '60%' }}>
+                    <div style={{ width: '80%' }}>
                         <Upload name="image[]" {...props} >
                             <Button>
                                 <Icon type="upload" /> Click to upload
@@ -357,29 +261,13 @@ class EditForm extends Component {
                 </FormItem>
                 <FormItem
                     {...formItemLayout}
-                        label="宣传语"
+                        label="活动规则"
                     >
                     <div>
                         { titles.length > 0 && this.getTitles(titles) }
-                        <Button type="dashed" onClick={this.addTitle} style={{ width: '60%' }}>
+                        <Button type="dashed" onClick={this.addTitle} style={{ width: '80%' }}>
                             <Icon type="plus" /> Add field
                         </Button>
-                    </div>
-                </FormItem>
-                <FormItem
-                    {...formItemLayout}
-                        label="专业领域"
-                    >
-                    <div>
-                        { fields.length > 0 && this.getFields(fields) }
-                        <Button type="dashed" onClick={this.addField} style={{ width: '60%' }}>
-                            <Icon type="plus" /> Add field
-                        </Button>
-                    </div>
-                </FormItem>
-                <FormItem>
-                    <div style={{ border: '1px solid #c0c2c4', margin: '0 20px'}}>
-                        <BraftEditor {...editorProps} />
                     </div>
                 </FormItem>
                 <FormItem
@@ -392,5 +280,5 @@ class EditForm extends Component {
     }
 }
   
-const WrappedForm = Form.create()(EditForm);
+const WrappedForm = Form.create()(Config);
 export default WrappedForm;

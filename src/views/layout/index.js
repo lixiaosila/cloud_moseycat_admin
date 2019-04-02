@@ -8,7 +8,6 @@ import Sider from './sider'
 import Tabs from './tags'
 import { debounce } from '@/utils'
 import { changeIsMobile, changeCollapsed, getConfig } from '@/redux/actions'
-import { getUser } from '@/server'
 
 class LayoutComponent extends Component {
 
@@ -25,13 +24,6 @@ class LayoutComponent extends Component {
   }
   getUserInfo() {
     const { fetchUser } = this.props;
-    getUser().then(
-      res => {
-        if(res.code == 1) {
-          fetchUser(res.data);
-        }
-      }
-    ) 
   }
   getClientWidth = () => {
     // 通过context上下文拿到store的dispatch事件,发起action修改store状态树
