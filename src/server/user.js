@@ -24,8 +24,18 @@ const getConfig = params  => {
     })
 }
 
+const putConfig = params  => {
+    return new Promise(reslove => {
+        api.put('/admin/indexConfig', params).then(res => {
+            if (res.data.code == 1) {
+                reslove(res.data)
+            }
+        })
+    })
+}
 
 export {
     getUser,
-    getConfig
+    getConfig,
+    putConfig
 }

@@ -1,9 +1,11 @@
 import {
     getUser,
-    getConfig
+    getConfig,
+    putConfig
 } from './user';
 
 export {
     getUser,
-    getConfig
+    getConfig,
+    putConfig
 }

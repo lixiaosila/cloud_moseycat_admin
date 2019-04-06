@@ -1,27 +1,25 @@
 import React, { Component } from 'react';
-import { Form, Button, Upload, Icon, message, Input } from 'antd';
-import { getConfig } from '@/server/index';
+import { Form, Button, Upload, Icon, message, Input, DatePicker } from 'antd';
+import { getConfig, putConfig } from '@/server/index';
+import moment from 'moment';
 
 const FormItem = Form.Item;
   
 class Config extends Component {
     state = {
         data: [],
-        previewPhoto: '',
-        awardTime: "",
-        endStartTime: "",
-        keyword: "",
-        rule: ""
+        previewPhoto: ''
     }
     componentDidMount() {
         this.getConfig();
     }
     getConfig() {
-        let params = {
-            debug: 1
-        };
-        getConfig(params).then(
+        getConfig().then(
             res => {
+                this.setState({
+                    data: res.data,
+                    previewPhoto: res.data.cover || ''
+                })
                 console.log('res', res);
             }
         )
@@ -51,23 +49,26 @@ class Config extends Component {
             if (!err) {
                 let { previewPhoto } = this.state;
                 if(!previewPhoto) {
-                    message.error('请上传头像！');
+                    message.error('请上传封面图片！');
                     return;
                 }
-                let { history } = this.props;
+                console.log('values============', values)
                 let params = {
-                    "cover": "http://baidu.com",
-                    "endStartTime": "2019-04-01 00:00:00",
-                    "awardTime": "2019-04-02 00:00:00",
-                    "rule": "活动规则",
-                    "photo": previewPhoto
+                    "cover": previewPhoto,
+                    "endStartTime": values.endStartTime.format("YYYY-MM-DD HH:mm"),
+                    "awardTime": values.awardTime.format("YYYY-MM-DD HH:mm"),
+                    "rule": values.rule,
                 }
-                if(this.props.match.params.id != ':id') {
-                    params.id = this.props.match.params.id;
-                    
-                } else {
-                    
-                }
+                putConfig(params).then(
+                    res => {
+                        if(res.code == 1) {
+                            message.success('配置成功'); 
+                            this.getConfig();
+                        }
+
+                        console.log('res', res);
+                    }
+                )
             }
         });
     }
@@ -84,7 +85,7 @@ class Config extends Component {
                 message.success(`${info.file.name} 上传成功`);
                 this.setState(
                     {
-                        previewPhoto: info.file.response.data[0]
+                        previewPhoto: info.file.response.data.url
                     }
                 )
             } else {
@@ -95,19 +96,19 @@ class Config extends Component {
             message.error(`${info.file.name} 上传失败.`);
         }
     }
-    getTitles = (titles) => {
-        return titles.map((item, index) => {
+    getTitles = (rules) => {
+        return rules.map((item, index) => {
             return  <FormItem
                         required={false}
                         key={index}
                     >
-                        <Input placeholder="请输入宣传语" value={item} style={{ width: '80%', marginRight: 8 }} onChange={this.handleTitle.bind(this, index)}/>
+                        <Input placeholder="请输入规则" value={item} style={{ width: '80%', marginRight: 8 }} onChange={this.handleRule.bind(this, index)}/>
 
-                        {titles.length > 0 ? (
+                        {rules.length > 0 ? (
                             <Icon
                                 className="dynamic-delete-button"
                                 type="minus-circle-o"
-                                onClick={() => this.removeTitle(index)}
+                                onClick={() => this.removeRule(index)}
                             />
                             ) : null
                         }
@@ -115,55 +116,67 @@ class Config extends Component {
         })
     }
 
-    addTitle = () => {
+    addRule = () => {
         const { form } = this.props;
-        const basic_titles = form.getFieldValue('title');
+        const basic_rules = form.getFieldValue('rule');
         let tpl = '';
-        let nextTitles = basic_titles.concat(tpl);
-        
+        let nextTitles = basic_rules.concat(tpl);
+        console.log('basic_rules', basic_rules, nextTitles)
         form.setFieldsValue({
-            title: nextTitles,
+            rule: nextTitles,
         });       
     }
-    handleTitle = (key, e) => {
+    handleRule = (key, e) => {
         const { form } = this.props;
-        let titles = form.getFieldValue('title');
-        titles[key] = e.target.value;
+        let rules = form.getFieldValue('rule');
+        rules[key] = e.target.value;
         form.setFieldsValue({
-            title: titles,
+            rule: rules,
         });
     }
-    removeTitle = (index) => {
+    removeRule = (index) => {
         const { form } = this.props;
-        const basic_titles = form.getFieldValue('title');
-        if (basic_titles.length === 0) {
+        const basic_rules = form.getFieldValue('rule');
+        if (basic_rules.length === 0) {
             return;
         }
-        let nextTitles = basic_titles.filter(
+        let nextRules = basic_rules.filter(
             (key, s_index) => {
                 return s_index !== index;
             }
         );
         form.setFieldsValue({
-            title: nextTitles,
+            rule: nextRules,
         });
     }
-
+    handleEndStartChange = (value, dateString) => {
+        console.log('Selected Time: ', value);
+        console.log('Formatted Selected Time: ', dateString);
+    }
+    handleEndStartOk = (value) => {
+        console.log('onOk: ', value);
+    }
+    handleAwardTimeChange = (value, dateString) => {
+        console.log('Selected Time: ', value);
+        console.log('Formatted Selected Time: ', dateString);
+    }
+    handleAwardTimeOk = (value) => {
+        console.log('onOk: ', value);
+    }
     render() {
         let { data, previewPhoto } = this.state;
+        let { handleEndStartChange, handleEndStartOk, handleAwardTimeChange, handleAwardTimeOk} = this;
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 4},
             wrapperCol: { span: 14 },
         };
-        getFieldDecorator('title', { initialValue: data.title || [] });
-        getFieldDecorator('field', { initialValue: data.field || [] });
-        let titles = getFieldValue('title') || [];
-        let fields = getFieldValue('field') || [];
-        
+        getFieldDecorator('rule', { initialValue: data.rule || [] });
+        let rules = getFieldValue('rule') || [];
+        console.log('rules========', rules)
         const props = {
             // action: 'http://moseycat.com:8081/admin/images',
-            action: '//b.moseycat.com/admin/images',
+            action: '//wanqiantest.hizeng.cn/admin/images',
             onChange: this.handleUpload,
             beforeUpload: this.beforeUpload,
             multiple: false,
@@ -176,32 +189,43 @@ class Config extends Component {
                     {...formItemLayout}
                     label="活动持续时间"
                 >
-                    {getFieldDecorator('name', {
-                        initialValue: data.name || '',
-                        rules: [{ required: true, message: '请输入定制师昵称' }],
+                    {getFieldDecorator('endStartTime', {
+                        initialValue: moment(data.endStartTime) || moment(),
+                        rules: [{ required: true, message: '请输入活动持续时间' }],
                     })(
-                    
-                        <Input placeholder="请输入定制师昵称" style={{ width: '80%' }} />
+                        <DatePicker
+                            showTime
+                            format="YYYY-MM-DD HH:mm"
+                            placeholder="请输入活动持续时间"
+                            onChange={handleEndStartChange}
+                            onOk={handleEndStartOk}
+                        />
                     )}
                 </FormItem>
                 <FormItem
                     {...formItemLayout}
-                    label="中奖公布时间"
+                    label="活动抽奖时间"
                 >
-                    {getFieldDecorator('area', {
-                        initialValue: data.area || '',
-                        rules: [{ required: true, message: '请输入定制师负责区域' }],
+                    {getFieldDecorator('awardTime', {
+                        initialValue: moment(data.awardTime) || moment(),
+                        rules: [{ required: true, message: '请输入活动抽奖时间' }],
                     })(
                     
-                        <Input placeholder="请输入定制负责区域" style={{ width: '80%' }} />
+                        <DatePicker
+                            showTime
+                            format="YYYY-MM-DD HH:mm"
+                            placeholder="请输入活动持续时间"
+                            onChange={handleAwardTimeChange}
+                            onOk={handleAwardTimeOk}
+                        />
                     )}
                 </FormItem>
                 <FormItem
                     {...formItemLayout}
-                        label="首页banner"
+                        label="封面图片"
                     >
                     <div style={{ width: '80%' }}>
-                        <Upload name="image[]" {...props} >
+                        <Upload name="image" {...props} >
                             <Button>
                                 <Icon type="upload" /> Click to upload
                             </Button>
@@ -216,9 +240,9 @@ class Config extends Component {
                         label="活动规则"
                     >
                     <div>
-                        { titles.length > 0 && this.getTitles(titles) }
-                        <Button type="dashed" onClick={this.addTitle} style={{ width: '80%' }}>
-                            <Icon type="plus" /> Add field
+                        { rules.length > 0 && this.getTitles(rules) }
+                        <Button type="dashed" onClick={this.addRule} style={{ width: '80%' }}>
+                            <Icon type="plus" /> 新增活动规则
                         </Button>
                     </div>
                 </FormItem>

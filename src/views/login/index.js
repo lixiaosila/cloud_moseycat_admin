@@ -37,8 +37,11 @@ class Login extends Component {
     }
     login = formVal => {
             const { handleLogin } = this.props
-            // 登录完成后 发送请求 调用接口获取用户信息
-            this.goDashBoard();
+            handleLogin(formVal).then(res => {
+                if(res.code == 1) {
+                    this.goDashBoard();
+                }
+            })
     }
     goDashBoard() {
         let {history} = this.context.router;

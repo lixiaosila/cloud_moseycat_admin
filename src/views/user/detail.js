@@ -4,90 +4,91 @@ import { getUser } from '@/server/index';
 
 class Detail extends Component {
     state = {
-        data: [{
-            key: '1',
-            name: 'John Brown',
-            age: 32,
-            address: 'New York No. 1 Lake Park',
-            tags: ['nice', 'developer'],
-        }, {
-            key: '2',
-            name: 'Jim Green',
-            age: 42,
-            address: 'London No. 1 Lake Park',
-            tags: ['loser'],
-        }, {
-            key: '3',
-            name: 'Joe Black',
-            age: 32,
-            address: 'Sidney No. 1 Lake Park',
-            tags: ['cool', 'teacher'],
-        }],
-        page: 1
+        data: [],
+        currentPage: 1,
+        loading: false,
+        pagination: {
+          total: 1,
+          current: 1,
+          pageSize: 20
+        },
+        columns: [{
+            title: '姓名',
+            dataIndex: 'name',
+            key: 'name',
+            render: text => <a href="javascript:;">{text}</a>,
+        }, 
+        {
+            title: '手机号',
+            dataIndex: 'mobile',
+            key: 'mobile',
+        },
+        {
+            title: '参与活动时间',
+            dataIndex: 'createdTime',
+            key: 'createdTime',
+        }]
     }
     componentDidMount() {
         this.getUser()
     }
-    getUser = () => {
+    getUser = (page = 1) => {
         let params = {
-            page: this.state.page 
+            page: page
         }
+        this.setState({
+            loading: true
+        })
         getUser(params).then(
             res => {
-                console.log('res', res);
+                this.setState({
+                    data: res.data.list,
+                    loading: false,
+                    pagination: {
+                        total: res.data.total,
+                        current: this.state.currentPage,
+                        pageSize: 20
+                    }
+                })
             }
         )
     }
-    handle = () => {
-        console.log(1)
+    handleAdd = () => {
+        let params = {
+            excel: 1
+        }
+        getUser(params).then(
+            res => {
+               console.log('res', res);
+            }
+        )
+    }
+    handlePage = (currentPage) => {
+        this.setState(
+          {
+            currentPage: currentPage
+          }
+        )
+        this.getUser(currentPage)
     }
     render() {
-        let { handle } = this;
-        let { data } = this.state;
-        const columns = [{
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
-            render: text => <a href="javascript:;">{text}</a>,
-        }, {
-            title: 'Age',
-            dataIndex: 'age',
-            key: 'age',
-        }, {
-            title: 'Address',
-            dataIndex: 'address',
-            key: 'address',
-        }, {
-            title: 'Tags',
-            key: 'tags',
-            dataIndex: 'tags',
-            render: tags => (
-                <span>
-                    {tags.map(tag => {
-                    let color = tag.length > 5 ? 'geekblue' : 'green';
-                    if (tag === 'loser') {
-                        color = 'volcano';
-                    }
-                    return <Tag color={color} key={tag}>{tag.toUpperCase()}</Tag>;
-                    })}
-                </span>
-                ),
-          }, {
-            title: 'Action',
-            key: 'action',
-            render: (text, record) => (
-              <span>
-                <a href="javascript:;">Invite {record.name}</a>
-                <Divider type="vertical" />
-                <a href="javascript:;">Delete</a>
-              </span>
-            ),
-        }];
+        let { columns, data, loading, pagination} = this.state;
+        let { handlePage, handleAdd } = this;
+        let pageConfig = Object.assign({},pagination, {
+            onChange: handlePage
+        })
           
         return(
             <div style={{ background: '#FFF', padding: '30px' }}>
-                <Button type="primary" style={{ marginBottom: '30px' }} onClick={ handle }>导出EXCEL</Button>
-                <Table columns={columns} dataSource={data} />
+                <Button type="primary" style={{ marginBottom: '30px' }} onClick={ handleAdd }>导出EXCEL</Button>
+                <Table
+                    bordered
+                    columns={columns}
+                    dataSource={data}
+                    pagination={pageConfig}
+                    rowKey={row => row.id}
+                    loading={loading}
+                />
             </div>
         )
     }
