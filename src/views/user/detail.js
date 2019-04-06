@@ -70,7 +70,7 @@ class Detail extends Component {
           
         return(
             <div style={{ background: '#FFF', padding: '30px' }}>
-                <Button type="primary" icon="download" style={{ marginBottom: '30px' }} href="//wanqiantest.hizeng.cn/admin/wechat/users?excel=1">
+                <Button type="primary" icon="download" style={{ marginBottom: '30px' }} href="//wanqianprod.hizeng.cn/admin/wechat/users?excel=1">
                     导出EXCEL
                 </Button>
                 <Table
