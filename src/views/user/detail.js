@@ -53,16 +53,6 @@ class Detail extends Component {
             }
         )
     }
-    handleAdd = () => {
-        let params = {
-            excel: 1
-        }
-        getUser(params).then(
-            res => {
-               console.log('res', res);
-            }
-        )
-    }
     handlePage = (currentPage) => {
         this.setState(
           {
@@ -80,7 +70,9 @@ class Detail extends Component {
           
         return(
             <div style={{ background: '#FFF', padding: '30px' }}>
-                <Button type="primary" style={{ marginBottom: '30px' }} onClick={ handleAdd }>导出EXCEL</Button>
+                <Button type="primary" icon="download" style={{ marginBottom: '30px' }} href="//wanqiantest.hizeng.cn/admin/wechat/users?excel=1">
+                    导出EXCEL
+                </Button>
                 <Table
                     bordered
                     columns={columns}

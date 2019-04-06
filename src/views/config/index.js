@@ -52,7 +52,6 @@ class Config extends Component {
                     message.error('请上传封面图片！');
                     return;
                 }
-                console.log('values============', values)
                 let params = {
                     "cover": previewPhoto,
                     "endStartTime": values.endStartTime.format("YYYY-MM-DD HH:mm"),
@@ -173,7 +172,6 @@ class Config extends Component {
         };
         getFieldDecorator('rule', { initialValue: data.rule || [] });
         let rules = getFieldValue('rule') || [];
-        console.log('rules========', rules)
         const props = {
             // action: 'http://moseycat.com:8081/admin/images',
             action: '//wanqiantest.hizeng.cn/admin/images',
