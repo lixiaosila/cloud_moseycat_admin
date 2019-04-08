@@ -7,7 +7,7 @@ message.config({
 });
 
 const api = axios.create({
-    baseURL: "//wanqianprod.hizeng.cn",
+    baseURL: "//wanqiantest.hizeng.cn",
     timeout: 5000,
     withCredentials: true // 允许携带cookie
 })

@@ -34,8 +34,19 @@ const putConfig = params  => {
     })
 }
 
+const restart = params  => {
+    return new Promise(reslove => {
+        api.post('/admin/restart', params).then(res => {
+            if (res.data.code == 1) {
+                reslove(res.data)
+            }
+        })
+    })
+}
+
 export {
     getUser,
     getConfig,
-    putConfig
+    putConfig,
+    restart
 }

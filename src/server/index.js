@@ -1,11 +1,13 @@
 import {
     getUser,
     getConfig,
-    putConfig
+    putConfig,
+    restart
 } from './user';
 
 export {
     getUser,
     getConfig,
-    putConfig
+    putConfig,
+    restart
 }
