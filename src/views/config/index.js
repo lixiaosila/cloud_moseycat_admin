@@ -57,6 +57,7 @@ class Config extends Component {
                     "endStartTime": values.endStartTime.format("YYYY-MM-DD HH:mm"),
                     "awardTime": values.awardTime.format("YYYY-MM-DD HH:mm"),
                     "rule": values.rule,
+                    "share": values.share
                 }
                 putConfig(params).then(
                     res => {
@@ -216,6 +217,18 @@ class Config extends Component {
                             onChange={handleAwardTimeChange}
                             onOk={handleAwardTimeOk}
                         />
+                    )}
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
+                    label="分享文案"
+                >
+                    {getFieldDecorator('share', {
+                        initialValue: data.share || '',
+                        rules: [{ required: true, message: '请输入分享文案' }],
+                    })(
+                    
+                        <Input placeholder="请输入分享文案" style={{ width: '80%' }} />
                     )}
                 </FormItem>
                 <FormItem
