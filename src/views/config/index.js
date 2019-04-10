@@ -175,7 +175,7 @@ class Config extends Component {
         let rules = getFieldValue('rule') || [];
         const props = {
             // action: 'http://moseycat.com:8081/admin/images',
-            action: '//wanqiantest.hizeng.cn/admin/images',
+            action: '//wanqianprod.hizeng.cn/admin/images',
             onChange: this.handleUpload,
             beforeUpload: this.beforeUpload,
             multiple: false,

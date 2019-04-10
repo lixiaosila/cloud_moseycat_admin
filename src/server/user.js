@@ -44,9 +44,23 @@ const restart = params  => {
     })
 }
 
+const getCode = params  => {
+    return new Promise(reslove => {
+        api.get('/admin/codes', {
+            params
+          }).then(res => {
+            if (res.data.code == 1) {
+                reslove(res.data)
+            }
+        })
+    })
+}
+
+
 export {
     getUser,
     getConfig,
     putConfig,
-    restart
+    restart,
+    getCode
 }

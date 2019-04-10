@@ -2,12 +2,14 @@ import {
     getUser,
     getConfig,
     putConfig,
-    restart
+    restart,
+    getCode
 } from './user';
 
 export {
     getUser,
     getConfig,
     putConfig,
-    restart
+    restart,
+    getCode
 }

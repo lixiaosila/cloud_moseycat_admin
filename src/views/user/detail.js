@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Table, Button, Popconfirm, Row, Col } from 'antd';
+import { Table, Button, Popconfirm, Row, Col, message } from 'antd';
 import { getUser, restart } from '@/server/index';
 
 class Detail extends Component {
@@ -64,14 +64,11 @@ class Detail extends Component {
     confirm = () => {
         restart().then(
             res => {
-                this.setState({
-                    currentPage: 1
-                })
-                this.getUser()
-                console.log('res', res);
+                message.success('数据清空成功！');
             }
         )
     }
+
     render() {
         let { columns, data, loading, pagination} = this.state;
         let { handlePage, confirm } = this;
@@ -83,13 +80,13 @@ class Detail extends Component {
             <div style={{ background: '#FFF', padding: '30px' }}>
                 <Row>
                     <Col span={12}>
-                        <Button type="primary" icon="download" style={{ marginBottom: '30px' }} href="//wanqiantest.hizeng.cn/admin/wechat/users?excel=1">
+                        <Button type="primary" icon="download" style={{ marginBottom: '30px' }} href="//wanqianprod.hizeng.cn/admin/wechat/users?excel=1">
                             导出EXCEL
                         </Button>
                     </Col>
                     <Col span={12} style={{textAlign: 'right'}}>
                         <Popconfirm placement="top" title="确认清除数据吗？" onConfirm={confirm} okText="确认" cancelText="取消">
-                            <Button type="primary" style={{ marginBottom: '30px' }} href="//wanqiantest.hizeng.cn/admin/wechat/users?excel=1">
+                            <Button type="primary" style={{ marginBottom: '30px' }}>
                                 清除数据
                             </Button>
                         </Popconfirm>
